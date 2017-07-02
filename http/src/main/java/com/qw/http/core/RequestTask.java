@@ -51,22 +51,21 @@ public class RequestTask implements Runnable {
     @Override
     public void run() {
         nRequestTaskListener.onPreExecute(mRequest.tag);
-        Object obj = callback.preRequest(mRequest);
-
-        if (obj != null) {
-            Message message = new Message();
-            message.what = HttpConstants.SUCCESS;
-            message.obj = obj;
-            mHandler.sendMessage(message);
-            return;
-        }
         try {
+            Object obj = callback.preRequest(mRequest);
+            if (obj != null) {
+                Message message = new Message();
+                message.what = HttpConstants.SUCCESS;
+                message.obj = obj;
+                mHandler.sendMessage(message);
+                return;
+            }
             HttpEngine httpEngine = new HttpURLConnectionHttpEngine();
             httpEngine.setRequest(mRequest);
             httpEngine.setOnProgressUpdateListener(new OnProgressUpdateListener() {
                 @Override
                 public void onProgressUpdate(long contentLength, long curLength) {
-                    
+
                 }
             });
             Response response = httpEngine.execute();
@@ -77,7 +76,10 @@ public class RequestTask implements Runnable {
             message.obj = obj;
             mHandler.sendMessage(message);
         } catch (HttpException e) {
-            e.printStackTrace();
+            Message message = new Message();
+            message.what = HttpConstants.FAIL;
+            message.obj = e;
+            mHandler.sendMessage(message);
         }
     }
 

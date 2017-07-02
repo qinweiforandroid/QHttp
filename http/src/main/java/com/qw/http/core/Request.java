@@ -1,19 +1,20 @@
 package com.qw.http.core;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * Created by qinwei on 2017/6/8.
  */
 
-public class Request {
+public class Request implements Serializable {
     public String url;
     public String postContent;
     public String tag;
     public RequestMethod method;
     public HashMap<String, String> headers;
     public HashMap<String, String> parameters;
-    public boolean global = true;//是否全局异常处理
+    public boolean global;//是否全局异常处理
 
     public Request(String url) {
         this.url = url;

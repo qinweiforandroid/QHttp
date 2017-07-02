@@ -42,12 +42,22 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
     @Override
     public Response get() throws HttpException {
         try {
-            HttpURLConnection connection = getConnection();
+            HttpURLConnection connection = null;
             HttpLog.d("url:" + request.url);
             HttpLog.d("method:" + request.method.name());
             HttpLog.d("headers:" + HttpStringUtil.buildParameterContent(request.headers));
             HttpLog.d("parameters:" + HttpStringUtil.buildParameterContent(request.parameters));
+            URL url = new URL(request.url);
+            if (request.url.startsWith("https")) {
+                connection = (HttpsURLConnection) url.openConnection();
+                // FIXME: 2017/6/8 设置证书相关
+            } else if (request.url.startsWith("http")) {
+                connection = (HttpURLConnection) url.openConnection();
+            }
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
             connection.setRequestMethod(request.method.name());
+            addHeaders(connection, request.headers);
             Response response = new Response();
             response.code = connection.getResponseCode();
             if (response.isSuccessful()) {
@@ -77,10 +87,22 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
     @Override
     public Response post() throws HttpException {
         try {
-            HttpURLConnection connection = getConnection();
+            HttpURLConnection connection = null;
+            URL url = new URL(request.url);
+            if (request.url.startsWith("https")) {
+                connection = (HttpsURLConnection) url.openConnection();
+                // FIXME: 2017/6/8 设置证书相关
+            } else if (request.url.startsWith("http")) {
+                connection = (HttpURLConnection) url.openConnection();
+            }
+            addHeaders(connection, request.headers);
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
             connection.setRequestMethod(request.method.name());
             Response response = new Response();
             response.code = connection.getResponseCode();
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
             write(connection.getOutputStream());
             if (response.isSuccessful()) {
 //            fixme set response headers
@@ -116,22 +138,6 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
         }
     }
 
-    private HttpURLConnection getConnection() throws HttpException, IOException {
-        HttpURLConnection connection = null;
-        URL url = new URL(request.url);
-        if (request.url.startsWith("https")) {
-            connection = (HttpsURLConnection) url.openConnection();
-            // FIXME: 2017/6/8 设置证书相关
-        } else if (request.url.startsWith("http")) {
-            connection = (HttpURLConnection) url.openConnection();
-        }
-        addHeaders(connection, request.headers);
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-        connection.setConnectTimeout(10000);
-        connection.setReadTimeout(10000);
-        return connection;
-    }
 
     /**
      * 设置http请求header
