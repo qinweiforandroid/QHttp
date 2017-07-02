@@ -46,4 +46,6 @@ public interface ICallback<T> {
      */
     T postRequest(T t);
 
+    void cancel();
+
 }

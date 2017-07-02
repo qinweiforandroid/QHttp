@@ -13,6 +13,8 @@ import java.io.InputStream;
  */
 
 public abstract class AbstractCallback<T> implements ICallback<T> {
+    private volatile boolean isCancelled;
+
     @Override
     public T parse(Response response) throws HttpException {
         try {
@@ -21,6 +23,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
             byte[] buffer = new byte[1024];
             int len = -1;
             while ((len = is.read(buffer)) > 0) {
+                checkIfCancelled();
                 os.write(buffer, 0, len);
             }
             byte[] bfs = os.toByteArray();
@@ -40,5 +43,21 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
     @Override
     public T postRequest(T t) {
         return t;
+    }
+
+    @Override
+    public void cancel() {
+        isCancelled = true;
+    }
+
+    /**
+     * 检测请求是否被取消
+     *
+     * @throws HttpException
+     */
+    private void checkIfCancelled() throws HttpException {
+        if (isCancelled) {
+            throw new HttpException(HttpException.ErrorType.CANCEL, "the request has been cancelled");
+        }
     }
 }

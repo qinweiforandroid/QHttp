@@ -27,6 +27,7 @@ public class RequestTask implements Runnable {
                     break;
                 case HttpConstants.FAIL:
                     HttpException e = (HttpException) msg.obj;
+                    e.printStackTrace();
                     if (onGlobalExceptionListener == null || onGlobalExceptionListener.onHandlerGlobalException(e)) {
                         callback.onFailure(e);
                     }
@@ -92,7 +93,8 @@ public class RequestTask implements Runnable {
     }
 
     public void cancel() {
-
+        mRequest.isCancelled = true;
+        callback.cancel();
     }
 
     public interface OnRequestTaskListener {

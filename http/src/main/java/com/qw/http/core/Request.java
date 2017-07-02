@@ -1,5 +1,7 @@
 package com.qw.http.core;
 
+import com.qw.http.exception.HttpException;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -15,6 +17,8 @@ public class Request implements Serializable {
     public HashMap<String, String> headers;
     public HashMap<String, String> parameters;
     public boolean global;//是否全局异常处理
+    public boolean isCancelled;//是否取消
+    public long delayTime;//延迟执行时间
 
     public Request(String url) {
         this.url = url;
@@ -50,5 +54,16 @@ public class Request implements Serializable {
             parameters = new HashMap<>();
         }
         parameters.put(key, value);
+    }
+
+    /**
+     * 检测请求是否被取消
+     *
+     * @throws HttpException
+     */
+    public void checkIfCancelled() throws HttpException {
+        if (isCancelled) {
+            throw new HttpException(HttpException.ErrorType.CANCEL, "the request has been cancelled");
+        }
     }
 }

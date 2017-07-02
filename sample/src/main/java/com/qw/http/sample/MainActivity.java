@@ -16,6 +16,7 @@ import com.qw.http.sample.net.API;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnGlobalExceptionListener {
 
     private Button mHttpGetBtn;
+    private Button mHttpCancelBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         mHttpGetBtn = (Button) findViewById(R.id.mHttpGetBtn);
         mHttpGetBtn.setOnClickListener(this);
+        mHttpCancelBtn = (Button) findViewById(R.id.mHttpCancelBtn);
+        mHttpCancelBtn.setOnClickListener(this);
     }
 
     @Override
@@ -31,12 +34,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mHttpGetBtn:
                 get();
                 break;
+            case R.id.mHttpCancelBtn:
+                cancel("baidu");
+                break;
+            default:
+                break;
         }
     }
 
+    private void cancel(String tag) {
+        RequestManager.getInstance().cancel(tag);
+    }
+
     private void get() {
-        Request request = new Request(API.loadPictureList(20,2));
+        Request request = new Request(API.loadPictureList(20, 2));
         request.tag = "baidu";
+        request.delayTime = 3000;
         RequestManager.getInstance().setOnGlobalExceptionListener(this);
         RequestManager.getInstance().execute(request, new StringCallback() {
             @Override
