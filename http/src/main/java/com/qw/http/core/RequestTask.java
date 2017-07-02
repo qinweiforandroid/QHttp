@@ -3,9 +3,6 @@ package com.qw.http.core;
 import android.os.Handler;
 import android.os.Message;
 
-import com.qw.http.callback.ICallback;
-import com.qw.http.callback.OnGlobalExceptionListener;
-import com.qw.http.callback.OnProgressUpdateListener;
 import com.qw.http.exception.HttpException;
 import com.qw.http.utils.HttpConstants;
 

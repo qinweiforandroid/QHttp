@@ -1,7 +1,7 @@
 package com.qw.http;
 
-import com.qw.http.callback.ICallback;
-import com.qw.http.callback.OnGlobalExceptionListener;
+import com.qw.http.core.ICallback;
+import com.qw.http.core.OnGlobalExceptionListener;
 import com.qw.http.core.Request;
 import com.qw.http.core.RequestTask;
 import com.qw.http.log.HttpLog;

@@ -1,4 +1,4 @@
-package com.qw.http.callback;
+package com.qw.http.core;
 
 import com.qw.http.exception.HttpException;
 

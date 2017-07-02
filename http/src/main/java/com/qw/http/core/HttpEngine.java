@@ -1,6 +1,5 @@
 package com.qw.http.core;
 
-import com.qw.http.callback.OnProgressUpdateListener;
 import com.qw.http.exception.HttpException;
 
 import java.io.IOException;

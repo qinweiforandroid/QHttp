@@ -1,5 +1,6 @@
 package com.qw.http.callback;
 
+import com.qw.http.core.AbstractCallback;
 import com.qw.http.log.HttpLog;
 
 /**

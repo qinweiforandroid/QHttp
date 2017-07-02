@@ -1,11 +1,6 @@
-package com.qw.http.callback;
+package com.qw.http.core;
 
-import com.qw.http.core.Request;
-import com.qw.http.core.Response;
 import com.qw.http.exception.HttpException;
-
-import java.net.HttpURLConnection;
-import java.util.HashMap;
 
 /**
  * http请求过程回调函数

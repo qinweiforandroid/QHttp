@@ -1,7 +1,5 @@
-package com.qw.http.callback;
+package com.qw.http.core;
 
-import com.qw.http.core.Request;
-import com.qw.http.core.Response;
 import com.qw.http.exception.HttpException;
 
 import java.io.ByteArrayOutputStream;
@@ -33,7 +31,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
         }
     }
 
-    public abstract T convert(String content);
+    public abstract T convert(String content) throws HttpException;
 
     @Override
     public T preRequest(Request mRequest) {

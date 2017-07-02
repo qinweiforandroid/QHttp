@@ -6,12 +6,15 @@ import android.view.View;
 import android.widget.Button;
 
 import com.qw.http.RequestManager;
-import com.qw.http.callback.OnGlobalExceptionListener;
+import com.qw.http.core.OnGlobalExceptionListener;
 import com.qw.http.callback.StringCallback;
 import com.qw.http.core.Request;
 import com.qw.http.exception.HttpException;
 import com.qw.http.log.HttpLog;
+import com.qw.http.sample.domain.Meizhi;
 import com.qw.http.sample.net.API;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnGlobalExceptionListener {
 
@@ -32,7 +35,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mHttpGetBtn:
-                get();
+//                get();
+                getJsonToObject();
                 break;
             case R.id.mHttpCancelBtn:
                 cancel("baidu");
@@ -40,6 +44,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    private void getJsonToObject() {
+        Request request = new Request(API.loadPictureList(20, 2));
+        request.tag = "baidu";
+        RequestManager.getInstance().setOnGlobalExceptionListener(this);
+        RequestManager.getInstance().execute(request, new GankIOCallback<ArrayList<Meizhi>>() {
+            @Override
+            public void onSuccess(ArrayList<Meizhi> meizhis) {
+                HttpLog.d(meizhis.toString());
+            }
+
+            @Override
+            public void onFailure(HttpException httpException) {
+                httpException.printStackTrace();
+            }
+        });
     }
 
     private void cancel(String tag) {
