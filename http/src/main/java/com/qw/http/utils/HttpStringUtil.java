@@ -11,7 +11,7 @@ public class HttpStringUtil {
     public static String buildCompletedUrl(String url, HashMap<String, String> parameters) {
         if (parameters == null || parameters.size() == 0) return url;
         if (url.contains("?")) {
-            url += buildParameterContent(parameters);
+            url += "&" + buildParameterContent(parameters);
         } else {
             url += "?" + buildParameterContent(parameters);
         }

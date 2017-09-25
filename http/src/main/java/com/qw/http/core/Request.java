@@ -16,7 +16,6 @@ public class Request implements Serializable {
     public RequestMethod method;
     public HashMap<String, String> headers;
     public HashMap<String, String> parameters;
-    public boolean global;//是否全局异常处理
     public boolean isCancelled;//是否取消
     public long delayTime;//延迟执行时间
 

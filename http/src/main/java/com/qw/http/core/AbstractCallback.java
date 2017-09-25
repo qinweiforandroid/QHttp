@@ -25,6 +25,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
                 os.write(buffer, 0, len);
             }
             byte[] bfs = os.toByteArray();
+            is.close();
             return convert(new String(bfs, "utf-8"));
         } catch (IOException e) {
             throw new HttpException(HttpException.ErrorType.IO, e.getMessage());

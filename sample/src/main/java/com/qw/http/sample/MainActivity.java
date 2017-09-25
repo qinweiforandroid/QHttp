@@ -2,6 +2,7 @@ package com.qw.http.sample;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -9,10 +10,14 @@ import com.qw.http.RequestManager;
 import com.qw.http.core.OnGlobalExceptionListener;
 import com.qw.http.callback.StringCallback;
 import com.qw.http.core.Request;
+import com.qw.http.core.RequestMethod;
 import com.qw.http.exception.HttpException;
 import com.qw.http.log.HttpLog;
 import com.qw.http.sample.domain.Meizhi;
 import com.qw.http.sample.net.API;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -36,7 +41,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.mHttpGetBtn:
 //                get();
-                getJsonToObject();
+//                getJsonToObject();
+                testPut();
                 break;
             case R.id.mHttpCancelBtn:
                 cancel("baidu");
@@ -46,10 +52,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void testPut() {
+        try {
+            Request request = new Request("https://api.bmob.cn/1/users/a8d23440cd", RequestMethod.PUT);
+            request.addHeader("X-Bmob-Application-Id", "e576b3b89c2611b1e691a62914af5a80");
+            request.addHeader("X-Bmob-REST-API-Key", "baae0b942cd77844447332dfaadb7c5b");
+            request.addHeader("Content-Type", "application/json");
+            request.addHeader("X-Bmob-Session-Token", "3e33d8a840a9f177800dc1ad602207cf");
+            JSONObject json = new JSONObject();
+            json.put("nick", "11");
+            request.postContent = json.toString();
+            RequestManager.getInstance().execute(request, new StringCallback() {
+                @Override
+                public void onSuccess(String s) {
+                    Log.d("s", s);
+                }
+
+                @Override
+                public void onFailure(HttpException httpException) {
+                    httpException.printStackTrace();
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void getJsonToObject() {
         Request request = new Request(API.loadPictureList(20, 2));
         request.tag = "baidu";
-        RequestManager.getInstance().setOnGlobalExceptionListener(this);
         RequestManager.getInstance().execute(request, new GankIOCallback<ArrayList<Meizhi>>() {
             @Override
             public void onSuccess(ArrayList<Meizhi> meizhis) {
@@ -71,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Request request = new Request(API.loadPictureList(20, 2));
         request.tag = "baidu";
         request.delayTime = 3000;
-        RequestManager.getInstance().setOnGlobalExceptionListener(this);
         RequestManager.getInstance().execute(request, new StringCallback() {
             @Override
             public void onSuccess(String s) {

@@ -97,9 +97,11 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
             HttpURLConnection connection = getConnection(request.url);
             connection.setDoInput(true);
             connection.setDoOutput(true);
+            connection.connect();
+            OutputStream outputStream = connection.getOutputStream();
+            write(outputStream);
             Response response = new Response();
             response.code = connection.getResponseCode();
-            write(connection.getOutputStream());
             request.checkIfCancelled();
             return buildResponse(connection);
         } catch (MalformedURLException e) {
@@ -137,6 +139,8 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
         } else if (request.parameters != null && request.parameters.size() > 0) {
             outputStream.write(HttpStringUtil.buildParameterContent(request.parameters).getBytes());
         }
+        outputStream.flush();
+        outputStream.close();
     }
 
 

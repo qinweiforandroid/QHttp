@@ -19,7 +19,6 @@ public class RequestManager implements RequestTask.OnRequestTaskListener {
     private static RequestManager mInstance;
     private ExecutorService mExecutors;
     private HashMap<String, RequestTask> cache;
-    private OnGlobalExceptionListener listener;
 
     private RequestManager() {
         mExecutors = Executors.newFixedThreadPool(10);
@@ -33,18 +32,20 @@ public class RequestManager implements RequestTask.OnRequestTaskListener {
         return mInstance;
     }
 
-    public void execute(Request request, ICallback callback) {
+    public void execute(Request request, ICallback callback, OnGlobalExceptionListener listener) {
         if (!cache.containsKey(request.tag)) {
             RequestTask task = new RequestTask(request);
             task.setCallback(callback);
             task.setOnRequestTaskListener(this);
-            if (request.global) {
-                task.setOnGlobalExceptionListener(listener);
-            }
+            task.setOnGlobalExceptionListener(listener);
             cache.put(request.tag, task);
             mExecutors.execute(task);
             return;
         }
+    }
+
+    public void execute(Request request, ICallback callback) {
+        execute(request, callback, null);
     }
 
     public void cancel(String tag) {
@@ -72,9 +73,5 @@ public class RequestManager implements RequestTask.OnRequestTaskListener {
         HttpLog.d("tag[" + tag + "] execute completed will remove  from cache task size=" + cache.size());
         cache.remove(tag);
         HttpLog.d("tag[" + tag + "] execute completed      removed from cache task size=" + cache.size());
-    }
-
-    public void setOnGlobalExceptionListener(OnGlobalExceptionListener listener) {
-        this.listener = listener;
     }
 }
