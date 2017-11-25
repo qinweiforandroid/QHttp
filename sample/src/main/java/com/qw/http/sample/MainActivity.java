@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.qw.http.HttpExecutor;
 import com.qw.http.RequestManager;
 import com.qw.http.core.OnGlobalExceptionListener;
 import com.qw.http.callback.StringCallback;
@@ -42,7 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mHttpGetBtn:
 //                get();
 //                getJsonToObject();
-                testPut();
+//                testPut();
+                testRequest();
                 break;
             case R.id.mHttpCancelBtn:
                 cancel("baidu");
@@ -50,6 +52,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    private void testRequest() {
+        HttpExecutor.create(ApiService.class, new StringCallback() {
+            @Override
+            public void onSuccess(String s) {
+                HttpLog.d(s);
+            }
+
+            @Override
+            public void onFailure(HttpException httpException) {
+
+            }
+        }).loadBaiDu("1", "2");
     }
 
     private void testPut() {
