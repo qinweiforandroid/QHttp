@@ -8,8 +8,11 @@ import android.util.Log;
 
 public class HttpLog {
     public static final String TAG = "HttpLog";
+    public static boolean DEBUG = true;
 
     public static void d(String msg) {
-        Log.d(TAG, "-->" + msg);
+        if (DEBUG) {
+            Log.d(TAG, "-->" + msg);
+        }
     }
 }

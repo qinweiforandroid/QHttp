@@ -13,10 +13,7 @@ public abstract class HttpEngine {
     protected Request request;
     protected OnProgressUpdateListener listener;
 
-    public Response execute() throws HttpException {
-        return null;
-    }
-
+    public abstract Response execute() throws HttpException;
 
     protected abstract Response get() throws HttpException;
 

@@ -1,7 +1,7 @@
 package com.qw.http;
 
-import com.qw.http.anno.Parm;
-import com.qw.http.anno.Url;
+import com.qw.http.anno.Param;
+import com.qw.http.anno.API;
 import com.qw.http.core.ICallback;
 import com.qw.http.core.Request;
 
@@ -20,14 +20,14 @@ public class HttpExecutor {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 Request request = null;
-                if (method.isAnnotationPresent(Url.class)) {
-                    Url url = method.getAnnotation(Url.class);
-                    request = new Request(url.url(), url.method());
+                if (method.isAnnotationPresent(API.class)) {
+                    API api = method.getAnnotation(API.class);
+                    request = new Request(api.url(), api.method());
                     Annotation[][] annotations = method.getParameterAnnotations();
                     for (int i = 0; i < annotations.length; i++) {
                         for (Annotation anno : annotations[i]) {
-                            if (anno instanceof Parm) {
-                                String key = ((Parm) anno).value();
+                            if (anno instanceof Param) {
+                                String key = ((Param) anno).value();
                                 if (args[i] instanceof String) {
                                     request.put(key, args[i].toString());
                                 } else if (args[i] instanceof Integer) {

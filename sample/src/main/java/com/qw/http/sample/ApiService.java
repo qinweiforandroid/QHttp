@@ -1,7 +1,7 @@
 package com.qw.http.sample;
 
-import com.qw.http.anno.Parm;
-import com.qw.http.anno.Url;
+import com.qw.http.anno.Param;
+import com.qw.http.anno.API;
 import com.qw.http.core.RequestMethod;
 
 /**
@@ -9,6 +9,6 @@ import com.qw.http.core.RequestMethod;
  */
 
 public interface ApiService {
-    @Url(url = "https://www.baidu.com", method = RequestMethod.GET)
-    void loadBaiDu(@Parm("username") String username, @Parm("password") String password);
+    @API(url = "https://www.baidu.com", method = RequestMethod.GET)
+    void loadBaiDu(@Param("username") String username, @Param("password") String password);
 }

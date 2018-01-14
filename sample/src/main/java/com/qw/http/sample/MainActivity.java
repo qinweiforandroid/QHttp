@@ -8,14 +8,17 @@ import android.widget.Button;
 
 import com.qw.http.HttpExecutor;
 import com.qw.http.RequestManager;
+import com.qw.http.core.HttpURLConnectionHttpEngine;
 import com.qw.http.core.OnGlobalExceptionListener;
 import com.qw.http.callback.StringCallback;
 import com.qw.http.core.Request;
+import com.qw.http.core.RequestConfig;
 import com.qw.http.core.RequestMethod;
 import com.qw.http.exception.HttpException;
 import com.qw.http.log.HttpLog;
 import com.qw.http.sample.domain.Meizhi;
 import com.qw.http.sample.net.API;
+import com.qw.http.utils.HttpConstants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +38,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mHttpGetBtn.setOnClickListener(this);
         mHttpCancelBtn = (Button) findViewById(R.id.mHttpCancelBtn);
         mHttpCancelBtn.setOnClickListener(this);
+        RequestManager.getInstance().config(new RequestConfig.Builder()
+                .setConnectTimeout(HttpConstants.TIME_OUT)
+                .setReadTimeout(HttpConstants.TIME_OUT)
+                .setDelayTime(0)
+                .setHttpEngine(new HttpURLConnectionHttpEngine())
+                .builder());
     }
 
     @Override
@@ -42,9 +51,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.mHttpGetBtn:
 //                get();
-//                getJsonToObject();
+                getJsonToObject();
 //                testPut();
-                testRequest();
+//                testRequest();
                 break;
             case R.id.mHttpCancelBtn:
                 cancel("baidu");

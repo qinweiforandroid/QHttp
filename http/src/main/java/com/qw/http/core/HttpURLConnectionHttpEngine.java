@@ -69,6 +69,7 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
         HttpLog.d("method:" + request.method.name());
         HttpLog.d("headers:" + HttpStringUtil.buildParameterContent(request.headers));
         HttpLog.d("parameters:" + HttpStringUtil.buildParameterContent(request.parameters));
+        HttpLog.d("content:" + request.postContent);
     }
 
     private Response buildResponse(HttpURLConnection connection) throws IOException, HttpException {
@@ -124,8 +125,8 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
         } else {
             throw new HttpException(HttpException.ErrorType.UNKNOW, "the url :" + request.url + " is not valid");
         }
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+        connection.setConnectTimeout(request.connect_timeout);
+        connection.setReadTimeout(request.read_timeout);
         connection.setRequestMethod(request.method.name());
         addHeaders(connection, request.headers);
         return connection;

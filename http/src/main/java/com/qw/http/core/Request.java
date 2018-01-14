@@ -17,7 +17,10 @@ public class Request implements Serializable {
     public HashMap<String, String> headers;
     public HashMap<String, String> parameters;
     public boolean isCancelled;//是否取消
-    public long delayTime;//延迟执行时间
+    public int delayTime;//延迟执行时间
+    public int connect_timeout;
+    public int read_timeout;
+
 
     public Request(String url) {
         this.url = url;

@@ -14,10 +14,11 @@ public class RequestTask implements Runnable {
     private Request mRequest;
     private ICallback callback;
     private OnRequestTaskListener nRequestTaskListener;
+    private HttpEngine httpEngine;
+    private OnGlobalExceptionListener onGlobalExceptionListener;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            super.handleMessage(msg);
             switch (msg.what) {
                 case HttpConstants.SUCCESS:
                     callback.onSuccess(msg.obj);
@@ -35,7 +36,6 @@ public class RequestTask implements Runnable {
             nRequestTaskListener.onExecuteCompleted(mRequest.tag);
         }
     };
-    private OnGlobalExceptionListener onGlobalExceptionListener;
 
     public RequestTask(Request mRequest) {
         this.mRequest = mRequest;
@@ -48,6 +48,10 @@ public class RequestTask implements Runnable {
 
     @Override
     public void run() {
+        start();
+    }
+
+    public void start() {
         nRequestTaskListener.onPreExecute(mRequest.tag);
         try {
             Object obj = callback.preRequest(mRequest);
@@ -58,7 +62,9 @@ public class RequestTask implements Runnable {
                 mHandler.sendMessage(message);
                 return;
             }
-            HttpEngine httpEngine = new HttpURLConnectionHttpEngine();
+            if (httpEngine == null) {
+                httpEngine = new HttpURLConnectionHttpEngine();
+            }
             httpEngine.setRequest(mRequest);
             httpEngine.setOnProgressUpdateListener(new OnProgressUpdateListener() {
                 @Override
@@ -92,6 +98,10 @@ public class RequestTask implements Runnable {
     public void cancel() {
         mRequest.isCancelled = true;
         callback.cancel();
+    }
+
+    public void setHttpEngine(HttpEngine httpEngine) {
+        this.httpEngine = httpEngine;
     }
 
     public interface OnRequestTaskListener {
