@@ -1,6 +1,7 @@
 package com.qw.http.core;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 
 import com.qw.http.exception.HttpException;
@@ -14,9 +15,9 @@ public class RequestTask implements Runnable {
     private Request mRequest;
     private ICallback callback;
     private OnRequestTaskListener nRequestTaskListener;
-    private HttpEngine httpEngine;
+    private Class<? extends HttpEngine> httpEngineCls;
     private OnGlobalExceptionListener onGlobalExceptionListener;
-    private Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -48,23 +49,17 @@ public class RequestTask implements Runnable {
 
     @Override
     public void run() {
-        start();
-    }
-
-    public void start() {
         nRequestTaskListener.onPreExecute(mRequest.tag);
         try {
             Object obj = callback.preRequest(mRequest);
             if (obj != null) {
-                Message message = new Message();
-                message.what = HttpConstants.SUCCESS;
-                message.obj = obj;
-                mHandler.sendMessage(message);
+                sendMessageToMainThread(HttpConstants.SUCCESS, obj);
                 return;
             }
-            if (httpEngine == null) {
-                httpEngine = new HttpURLConnectionHttpEngine();
+            if (httpEngineCls == null) {
+                httpEngineCls = HttpURLConnectionHttpEngine.class;
             }
+            HttpEngine httpEngine = httpEngineCls.newInstance();
             httpEngine.setRequest(mRequest);
             httpEngine.setOnProgressUpdateListener(new OnProgressUpdateListener() {
                 @Override
@@ -75,16 +70,59 @@ public class RequestTask implements Runnable {
             Response response = httpEngine.execute();
             obj = callback.parse(response);
             obj = callback.postRequest(obj);
-            Message message = new Message();
-            message.what = HttpConstants.SUCCESS;
-            message.obj = obj;
-            mHandler.sendMessage(message);
+            sendMessageToMainThread(HttpConstants.SUCCESS, obj);
         } catch (HttpException e) {
-            Message message = new Message();
-            message.what = HttpConstants.FAIL;
-            message.obj = e;
-            mHandler.sendMessage(message);
+            e.printStackTrace();
+            sendMessageToMainThread(HttpConstants.FAIL, e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendMessageToMainThread(HttpConstants.FAIL, new HttpException(HttpException.ErrorType.UNKNOW, e.getMessage()));
         }
+    }
+
+    public void startExecuteInCurrentThread() {
+        nRequestTaskListener.onPreExecute(mRequest.tag);
+        try {
+            Object obj = callback.preRequest(mRequest);
+            if (obj != null) {
+                callback.onSuccess(obj);
+                return;
+            }
+            if (httpEngineCls == null) {
+                httpEngineCls = HttpURLConnectionHttpEngine.class;
+            }
+            HttpEngine httpEngine = httpEngineCls.newInstance();
+            httpEngine.setRequest(mRequest);
+            httpEngine.setOnProgressUpdateListener(new OnProgressUpdateListener() {
+                @Override
+                public void onProgressUpdate(long contentLength, long curLength) {
+
+                }
+            });
+            Response response = httpEngine.execute();
+            obj = callback.parse(response);
+            obj = callback.postRequest(obj);
+            callback.onSuccess(obj);
+        } catch (HttpException e) {
+            e.printStackTrace();
+            callback.onFailure(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onFailure(new HttpException(HttpException.ErrorType.UNKNOW, e.getMessage()));
+        }
+    }
+
+    /**
+     * 子线程到主线程切换
+     *
+     * @param what 消息类型
+     * @param obj  消息内容
+     */
+    private void sendMessageToMainThread(int what, Object obj) {
+        Message message = Message.obtain();
+        message.what = what;
+        message.obj = obj;
+        mHandler.sendMessage(message);
     }
 
     public void setOnRequestTaskListener(OnRequestTaskListener listener) {
@@ -100,8 +138,8 @@ public class RequestTask implements Runnable {
         callback.cancel();
     }
 
-    public void setHttpEngine(HttpEngine httpEngine) {
-        this.httpEngine = httpEngine;
+    public void setHttpEngine(Class<? extends HttpEngine> httpEngineCls) {
+        this.httpEngineCls = httpEngineCls;
     }
 
     public interface OnRequestTaskListener {

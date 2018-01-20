@@ -43,6 +43,13 @@ public class RequestManager implements RequestTask.OnRequestTaskListener {
         return mInstance;
     }
 
+    /**
+     * 开子线程执行请求任务
+     *
+     * @param request  请求信息
+     * @param callback 请求过程中回调函数
+     * @param listener 全局异常处理
+     */
     public void execute(Request request, ICallback callback, OnGlobalExceptionListener listener) {
         if (!mRequestTaskCache.containsKey(request.tag)) {
             RequestTask task = buildRequestTask(request, callback, listener);
@@ -50,6 +57,19 @@ public class RequestManager implements RequestTask.OnRequestTaskListener {
             mRequestTaskCache.put(request.tag, task);
             mExecutors.execute(task);
         }
+    }
+
+    /**
+     * 在当前线程中执行请求任务
+     *
+     * @param request  请求信息
+     * @param callback 请求过程中回调函数
+     */
+    public void executeInMainThread(Request request, ICallback callback) {
+        RequestTask task = buildRequestTask(request, callback, null);
+        task.setOnRequestTaskListener(this);
+        //直接在当前线程中执行
+        task.startExecuteInCurrentThread();
     }
 
     private RequestTask buildRequestTask(Request request, ICallback callback, OnGlobalExceptionListener listener) {

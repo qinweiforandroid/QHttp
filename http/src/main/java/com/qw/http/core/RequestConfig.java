@@ -22,7 +22,7 @@ public class RequestConfig {
     /**
      * 请求处理工具
      */
-    public HttpEngine httpEngine;
+    public Class<? extends HttpEngine> httpEngine;
 
     /**
      * RequestConfig构建工具类
@@ -31,7 +31,7 @@ public class RequestConfig {
         private int delayTime;
         private int connect_timeout;
         private int read_timeout;
-        private HttpEngine httpEngine;
+        private Class<? extends HttpEngine> httpEngine;
 
         public Builder setConnectTimeout(int time) {
             this.connect_timeout = time;
@@ -48,7 +48,7 @@ public class RequestConfig {
             return this;
         }
 
-        public Builder setHttpEngine(HttpEngine httpEngine) {
+        public Builder setHttpEngine(Class<? extends HttpEngine> httpEngine) {
             this.httpEngine = httpEngine;
             return this;
         }
@@ -65,7 +65,7 @@ public class RequestConfig {
             config.read_timeout = read_timeout;
             config.delayTime = delayTime;
             if (httpEngine == null) {
-                httpEngine = new HttpURLConnectionHttpEngine();
+                httpEngine = HttpURLConnectionHttpEngine.class;
             }
             config.httpEngine = httpEngine;
             return config;
@@ -78,7 +78,7 @@ public class RequestConfig {
                 .setConnectTimeout(HttpConstants.TIME_OUT)
                 .setReadTimeout(HttpConstants.TIME_OUT)
                 .setDelayTime(0)
-                .setHttpEngine(new HttpURLConnectionHttpEngine())
+                .setHttpEngine(HttpURLConnectionHttpEngine.class)
                 .builder();
     }
 }

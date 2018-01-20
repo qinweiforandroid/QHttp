@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setConnectTimeout(HttpConstants.TIME_OUT)
                 .setReadTimeout(HttpConstants.TIME_OUT)
                 .setDelayTime(0)
-                .setHttpEngine(new HttpURLConnectionHttpEngine())
+                .setHttpEngine(HttpURLConnectionHttpEngine.class)
                 .builder());
     }
 
@@ -51,9 +51,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.mHttpGetBtn:
 //                get();
-                getJsonToObject();
+//                getJsonToObject();
 //                testPut();
 //                testRequest();
+                executeInMainThread();
                 break;
             case R.id.mHttpCancelBtn:
                 cancel("baidu");
@@ -61,6 +62,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    private void executeInMainThread() {
+        new Thread() {
+            @Override
+            public void run() {
+                HttpLog.d("executeInMainThread start");
+                Request request = new Request(API.loadPictureList(20, 2));
+                request.tag = "baidu";
+                RequestManager.getInstance().executeInMainThread(request, new GankIOCallback<ArrayList<Meizhi>>() {
+                    @Override
+                    public void onSuccess(ArrayList<Meizhi> meizhis) {
+                        HttpLog.d(meizhis.toString());
+                    }
+
+                    @Override
+                    public void onFailure(HttpException httpException) {
+                        httpException.printStackTrace();
+                    }
+                });
+                HttpLog.d("executeInMainThread end");
+            }
+        }.start();
     }
 
     private void testRequest() {
