@@ -112,14 +112,17 @@ public class RequestManager implements RequestTask.OnRequestTaskListener {
 
     @Override
     public synchronized void onPreExecute(String tag) {
-        HttpLog.d("tag[" + tag + "] start ...");
+        HttpLog.d("request tag[" + tag + "] start execute ...");
     }
 
     @Override
     public synchronized void onExecuteCompleted(String tag) {
-        HttpLog.d("tag[" + tag + "] execute completed will remove  from mRequestTaskCache task size=" + mRequestTaskCache.size());
-        RequestTask task = mRequestTaskCache.remove(tag);
-        task = null;
-        HttpLog.d("tag[" + tag + "] execute completed      removed from mRequestTaskCache task size=" + mRequestTaskCache.size());
+        HttpLog.d("request tag[" + tag + "] execute completed will remove  from mRequestTaskCache task size=" + mRequestTaskCache.size());
+        mRequestTaskCache.remove(tag);
+        HttpLog.d("request tag[" + tag + "] execute completed      removed from mRequestTaskCache task size=" + mRequestTaskCache.size());
+    }
+
+    public RequestConfig getConfig() {
+        return mRequestConfig;
     }
 }

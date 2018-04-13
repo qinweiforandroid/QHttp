@@ -1,5 +1,7 @@
 package com.qw.http.core;
 
+import com.qw.http.safe.DefaultSafeImpl;
+import com.qw.http.safe.SafeInterface;
 import com.qw.http.utils.HttpConstants;
 
 /**
@@ -25,6 +27,11 @@ public class RequestConfig {
     public Class<? extends HttpEngine> httpEngine;
 
     /**
+     * 加解密配置
+     */
+    public SafeInterface safeInterface;
+
+    /**
      * RequestConfig构建工具类
      */
     public static class Builder {
@@ -32,6 +39,7 @@ public class RequestConfig {
         private int connect_timeout;
         private int read_timeout;
         private Class<? extends HttpEngine> httpEngine;
+        private SafeInterface safeInterface;
 
         public Builder setConnectTimeout(int time) {
             this.connect_timeout = time;
@@ -53,6 +61,11 @@ public class RequestConfig {
             return this;
         }
 
+        public Builder setSafeInterface(SafeInterface safeInterface) {
+            this.safeInterface = safeInterface;
+            return this;
+        }
+
         public RequestConfig builder() {
             RequestConfig config = new RequestConfig();
             if (connect_timeout == 0) {
@@ -68,8 +81,11 @@ public class RequestConfig {
                 httpEngine = HttpURLConnectionHttpEngine.class;
             }
             config.httpEngine = httpEngine;
+            if (safeInterface == null) {
+                safeInterface = new DefaultSafeImpl();
+            }
+            config.safeInterface = safeInterface;
             return config;
-
         }
     }
 

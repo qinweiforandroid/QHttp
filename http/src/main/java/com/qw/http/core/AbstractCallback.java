@@ -1,5 +1,6 @@
 package com.qw.http.core;
 
+import com.qw.http.RequestManager;
 import com.qw.http.exception.HttpException;
 
 import java.io.ByteArrayOutputStream;
@@ -26,7 +27,10 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
             }
             byte[] bfs = os.toByteArray();
             is.close();
-            return convert(new String(bfs, "utf-8"));
+            String responseContent = new String(bfs, "utf-8");
+            //先进行解密
+            responseContent = RequestManager.getInstance().getConfig().safeInterface.decrypt(responseContent);
+            return convert(responseContent);
         } catch (IOException e) {
             throw new HttpException(HttpException.ErrorType.IO, e.getMessage());
         }

@@ -26,7 +26,6 @@ public class RequestTask implements Runnable {
                     break;
                 case HttpConstants.FAIL:
                     HttpException e = (HttpException) msg.obj;
-                    e.printStackTrace();
                     if (onGlobalExceptionListener == null || onGlobalExceptionListener.onHandlerGlobalException(e)) {
                         callback.onFailure(e);
                     }
@@ -72,10 +71,8 @@ public class RequestTask implements Runnable {
             obj = callback.postRequest(obj);
             sendMessageToMainThread(HttpConstants.SUCCESS, obj);
         } catch (HttpException e) {
-            e.printStackTrace();
             sendMessageToMainThread(HttpConstants.FAIL, e);
         } catch (Exception e) {
-            e.printStackTrace();
             sendMessageToMainThread(HttpConstants.FAIL, new HttpException(HttpException.ErrorType.UNKNOW, e.getMessage()));
         }
     }
@@ -104,10 +101,8 @@ public class RequestTask implements Runnable {
             obj = callback.postRequest(obj);
             callback.onSuccess(obj);
         } catch (HttpException e) {
-            e.printStackTrace();
             callback.onFailure(e);
         } catch (Exception e) {
-            e.printStackTrace();
             callback.onFailure(new HttpException(HttpException.ErrorType.UNKNOW, e.getMessage()));
         }
     }

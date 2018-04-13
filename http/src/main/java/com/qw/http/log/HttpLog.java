@@ -9,10 +9,11 @@ import android.util.Log;
 public class HttpLog {
     public static final String TAG = "HttpLog";
     public static boolean DEBUG = true;
+    public static String PREFIX = "-->";
 
     public static void d(String msg) {
         if (DEBUG) {
-            Log.d(TAG, "-->" + msg);
+            Log.d(TAG, PREFIX + msg);
         }
     }
 }

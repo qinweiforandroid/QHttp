@@ -3,6 +3,7 @@ package com.qw.http.core;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
+import com.qw.http.RequestManager;
 import com.qw.http.exception.HttpException;
 import com.qw.http.log.HttpLog;
 import com.qw.http.utils.HttpStringUtil;
@@ -69,7 +70,7 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
         HttpLog.d("method:" + request.method.name());
         HttpLog.d("headers:" + HttpStringUtil.buildParameterContent(request.headers));
         HttpLog.d("parameters:" + HttpStringUtil.buildParameterContent(request.parameters));
-        HttpLog.d("content:" + request.postContent);
+        HttpLog.d("postContent:" + request.postContent);
     }
 
     private Response buildResponse(HttpURLConnection connection) throws IOException, HttpException {
@@ -136,7 +137,9 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
     @Override
     public void write(OutputStream outputStream) throws IOException {
         if (!TextUtils.isEmpty(request.postContent)) {
-            outputStream.write(request.postContent.getBytes());
+            String encrypt = RequestManager.getInstance().getConfig().safeInterface.encrypt(request.postContent);
+            HttpLog.d("加密后数据:" + encrypt);
+            outputStream.write(encrypt.getBytes());
         } else if (request.parameters != null && request.parameters.size() > 0) {
             outputStream.write(HttpStringUtil.buildParameterContent(request.parameters).getBytes());
         }

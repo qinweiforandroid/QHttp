@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setReadTimeout(HttpConstants.TIME_OUT)
                 .setDelayTime(0)
                 .setHttpEngine(HttpURLConnectionHttpEngine.class)
+                .setSafeInterface(new AesSafeImpl())
                 .builder());
     }
 
@@ -52,9 +53,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mHttpGetBtn:
 //                get();
 //                getJsonToObject();
-//                testPut();
+                testPut();
 //                testRequest();
-                executeInMainThread();
+//                executeInMainThread();
                 break;
             case R.id.mHttpCancelBtn:
                 cancel("baidu");
