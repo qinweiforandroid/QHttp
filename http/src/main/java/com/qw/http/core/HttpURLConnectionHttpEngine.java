@@ -7,6 +7,7 @@ import com.qw.http.RequestManager;
 import com.qw.http.exception.HttpException;
 import com.qw.http.log.HttpLog;
 import com.qw.http.utils.HttpStringUtil;
+import com.qw.http.utils.UploadUtil;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -135,16 +136,25 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
 
 
     @Override
-    public void write(OutputStream outputStream) throws IOException {
-        if (!TextUtils.isEmpty(request.postContent)) {
-            String encrypt = RequestManager.getInstance().getConfig().safeInterface.encrypt(request.postContent);
-            HttpLog.d("加密后数据:" + encrypt);
-            outputStream.write(encrypt.getBytes());
-        } else if (request.parameters != null && request.parameters.size() > 0) {
-            outputStream.write(HttpStringUtil.buildParameterContent(request.parameters).getBytes());
+    public void write(OutputStream outputStream) throws HttpException {
+        try {
+            if (!TextUtils.isEmpty(request.postContent) && request.uploadFiles != null) {
+                String encrypt = RequestManager.getInstance().getConfig().safeInterface.encrypt(request.postContent);
+                HttpLog.d("加密后数据:" + encrypt);
+                UploadUtil.upload(outputStream, encrypt, request.uploadFiles);
+                outputStream.write(encrypt.getBytes());
+            } else if (!TextUtils.isEmpty(request.postContent)) {
+                String encrypt = RequestManager.getInstance().getConfig().safeInterface.encrypt(request.postContent);
+                HttpLog.d("加密后数据:" + encrypt);
+                outputStream.write(encrypt.getBytes());
+            } else if (request.parameters != null && request.parameters.size() > 0) {
+                outputStream.write(HttpStringUtil.buildParameterContent(request.parameters).getBytes());
+            }
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            throw new HttpException(HttpException.ErrorType.IO, e.getMessage());
         }
-        outputStream.flush();
-        outputStream.close();
     }
 
 

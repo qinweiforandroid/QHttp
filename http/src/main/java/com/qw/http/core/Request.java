@@ -3,6 +3,7 @@ package com.qw.http.core;
 import com.qw.http.exception.HttpException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -10,15 +11,28 @@ import java.util.HashMap;
  */
 
 public class Request implements Serializable {
+    public String tag;
     public String url;
     public String postContent;
-    public String tag;
     public RequestMethod method;
     public HashMap<String, String> headers;
     public HashMap<String, String> parameters;
-    public boolean isCancelled;//是否取消
-    public int delayTime;//延迟执行时间
+    public ArrayList<FileEntity> uploadFiles;
+    /**
+     * 是否取消
+     */
+    public boolean isCancelled;
+    /**
+     * 延迟执行时间
+     */
+    public int delayTime;
+    /**
+     * 连接超时时间
+     */
     public int connect_timeout;
+    /**
+     * 读取超时时间
+     */
     public int read_timeout;
 
 
@@ -43,6 +57,13 @@ public class Request implements Serializable {
             headers = new HashMap<>();
         }
         headers.put(key, value);
+    }
+
+    public void addUploadFile(FileEntity uploadFile) {
+        if (uploadFiles == null) {
+            uploadFiles = new ArrayList<>();
+        }
+        uploadFiles.add(uploadFile);
     }
 
     /**

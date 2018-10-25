@@ -6,7 +6,7 @@ package com.qw.http.exception;
 
 public class HttpException extends Exception {
     public enum ErrorType {
-        IO, TIMEOUT, JSON, FILE_NOT_FIND, CANCEL, SERVER,UNKNOW
+        IO, TIMEOUT, JSON, FILE_NOT_FIND, CANCEL, SERVER, UPLOAD, UNKNOW
     }
 
     private ErrorType type;

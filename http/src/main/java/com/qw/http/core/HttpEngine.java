@@ -19,7 +19,7 @@ public abstract class HttpEngine {
 
     protected abstract Response post() throws HttpException;
 
-    protected abstract void write(OutputStream outputStream) throws IOException;
+    protected abstract void write(OutputStream outputStream) throws HttpException;
 
     public void setRequest(Request request) {
         this.request = request;

@@ -5,5 +5,5 @@ package com.qw.http.core;
  */
 
 public interface OnProgressUpdateListener {
-    void onProgressUpdate(long contentLength, long curLength);
+    void onProgressUpdate(long curLength, long contentLength);
 }
