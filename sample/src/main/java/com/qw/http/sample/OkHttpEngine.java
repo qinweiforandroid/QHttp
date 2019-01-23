@@ -32,7 +32,7 @@ public class OkHttpEngine extends HttpEngine {
     }
 
     @Override
-    protected void write(OutputStream outputStream) throws IOException {
+    protected void write(OutputStream outputStream) throws HttpException {
         HttpLog.d("write");
     }
 }

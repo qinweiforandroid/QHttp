@@ -15,7 +15,7 @@ public class RequestTask implements Runnable {
     private Request mRequest;
     private ICallback callback;
     private OnRequestTaskListener nRequestTaskListener;
-    private Class<? extends HttpEngine> httpEngineCls;
+    private HttpEngine httpEngine;
     private OnGlobalExceptionListener onGlobalExceptionListener;
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -26,6 +26,7 @@ public class RequestTask implements Runnable {
                     break;
                 case HttpConstants.FAIL:
                     HttpException e = (HttpException) msg.obj;
+                    e.printStackTrace();
                     if (onGlobalExceptionListener == null || onGlobalExceptionListener.onHandlerGlobalException(e)) {
                         callback.onFailure(e);
                     }
@@ -55,10 +56,9 @@ public class RequestTask implements Runnable {
                 sendMessageToMainThread(HttpConstants.SUCCESS, obj);
                 return;
             }
-            if (httpEngineCls == null) {
-                httpEngineCls = HttpURLConnectionHttpEngine.class;
+            if (httpEngine == null) {
+                httpEngine = new HttpURLConnectionHttpEngine();
             }
-            HttpEngine httpEngine = httpEngineCls.newInstance();
             httpEngine.setRequest(mRequest);
             httpEngine.setOnProgressUpdateListener(new OnProgressUpdateListener() {
                 @Override
@@ -85,10 +85,9 @@ public class RequestTask implements Runnable {
                 callback.onSuccess(obj);
                 return;
             }
-            if (httpEngineCls == null) {
-                httpEngineCls = HttpURLConnectionHttpEngine.class;
+            if (httpEngine == null) {
+                httpEngine = new HttpURLConnectionHttpEngine();
             }
-            HttpEngine httpEngine = httpEngineCls.newInstance();
             httpEngine.setRequest(mRequest);
             httpEngine.setOnProgressUpdateListener(new OnProgressUpdateListener() {
                 @Override
@@ -133,8 +132,8 @@ public class RequestTask implements Runnable {
         callback.cancel();
     }
 
-    public void setHttpEngine(Class<? extends HttpEngine> httpEngineCls) {
-        this.httpEngineCls = httpEngineCls;
+    public void setHttpEngine(HttpEngine httpEngine) {
+        this.httpEngine = httpEngine;
     }
 
     public interface OnRequestTaskListener {

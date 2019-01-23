@@ -29,7 +29,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
             is.close();
             String responseContent = new String(bfs, "utf-8");
             //先进行解密
-            responseContent = RequestManager.getInstance().getConfig().safeInterface.decrypt(responseContent);
+            responseContent = RequestManager.getInstance().getConfig().getSafeInterface().decrypt(responseContent);
             return convert(responseContent);
         } catch (IOException e) {
             throw new HttpException(HttpException.ErrorType.IO, e.getMessage());
@@ -58,7 +58,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
      *
      * @throws HttpException
      */
-    private void checkIfCancelled() throws HttpException {
+    protected void checkIfCancelled() throws HttpException {
         if (isCancelled) {
             throw new HttpException(HttpException.ErrorType.CANCEL, "the request has been cancelled");
         }

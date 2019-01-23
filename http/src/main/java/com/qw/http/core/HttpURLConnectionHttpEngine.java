@@ -77,6 +77,9 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
     private Response buildResponse(HttpURLConnection connection) throws IOException, HttpException {
         Response response = new Response();
         response.code = connection.getResponseCode();
+        response.addHeader("content-length", connection.getContentLength());
+        response.addHeader("content-encoding", connection.getContentEncoding());
+        response.addHeader("content-type", connection.getContentType());
         if (response.isSuccessful()) {
             String contentEncoding = connection.getContentEncoding();
             if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
@@ -139,12 +142,12 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
     public void write(OutputStream outputStream) throws HttpException {
         try {
             if (!TextUtils.isEmpty(request.postContent) && request.uploadFiles != null) {
-                String encrypt = RequestManager.getInstance().getConfig().safeInterface.encrypt(request.postContent);
+                String encrypt = RequestManager.getInstance().getConfig().getSafeInterface().encrypt(request.postContent);
                 HttpLog.d("加密后数据:" + encrypt);
-                UploadUtil.upload(outputStream, encrypt, request.uploadFiles);
+                UploadUtil.upload(outputStream, encrypt, request.uploadFiles,listener);
                 outputStream.write(encrypt.getBytes());
             } else if (!TextUtils.isEmpty(request.postContent)) {
-                String encrypt = RequestManager.getInstance().getConfig().safeInterface.encrypt(request.postContent);
+                String encrypt = RequestManager.getInstance().getConfig().getSafeInterface().encrypt(request.postContent);
                 HttpLog.d("加密后数据:" + encrypt);
                 outputStream.write(encrypt.getBytes());
             } else if (request.parameters != null && request.parameters.size() > 0) {

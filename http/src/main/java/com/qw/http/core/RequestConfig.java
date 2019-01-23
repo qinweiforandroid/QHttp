@@ -12,24 +12,24 @@ public class RequestConfig {
     /**
      * 延迟执行时间
      */
-    public int delayTime;
+    private int delayTime;
     /**
      * 连接超时时间
      */
-    public int connect_timeout;
+    private int connect_timeout;
     /**
      * 响应超时时间
      */
-    public int read_timeout;
+    private int read_timeout;
     /**
      * 请求处理工具
      */
-    public Class<? extends HttpEngine> httpEngine;
+    private HttpEngine httpEngine;
 
     /**
      * 加解密配置
      */
-    public SafeInterface safeInterface;
+    private SafeInterface safeInterface;
 
     /**
      * RequestConfig构建工具类
@@ -38,7 +38,7 @@ public class RequestConfig {
         private int delayTime;
         private int connect_timeout;
         private int read_timeout;
-        private Class<? extends HttpEngine> httpEngine;
+        private HttpEngine httpEngine;
         private SafeInterface safeInterface;
 
         public Builder setConnectTimeout(int time) {
@@ -56,7 +56,7 @@ public class RequestConfig {
             return this;
         }
 
-        public Builder setHttpEngine(Class<? extends HttpEngine> httpEngine) {
+        public Builder setHttpEngine(HttpEngine httpEngine) {
             this.httpEngine = httpEngine;
             return this;
         }
@@ -78,7 +78,7 @@ public class RequestConfig {
             config.read_timeout = read_timeout;
             config.delayTime = delayTime;
             if (httpEngine == null) {
-                httpEngine = HttpURLConnectionHttpEngine.class;
+                httpEngine = new HttpURLConnectionHttpEngine();
             }
             config.httpEngine = httpEngine;
             if (safeInterface == null) {
@@ -94,7 +94,26 @@ public class RequestConfig {
                 .setConnectTimeout(HttpConstants.TIME_OUT)
                 .setReadTimeout(HttpConstants.TIME_OUT)
                 .setDelayTime(0)
-                .setHttpEngine(HttpURLConnectionHttpEngine.class)
                 .builder();
+    }
+
+    public int getDelayTime() {
+        return delayTime;
+    }
+
+    public int getConnectTimeout() {
+        return connect_timeout;
+    }
+
+    public int getReadTimeout() {
+        return read_timeout;
+    }
+
+    public HttpEngine getHttpEngine() {
+        return httpEngine;
+    }
+
+    public SafeInterface getSafeInterface() {
+        return safeInterface;
     }
 }

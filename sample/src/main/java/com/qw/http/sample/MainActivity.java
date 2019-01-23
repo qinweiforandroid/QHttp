@@ -1,13 +1,17 @@
 package com.qw.http.sample;
 
+import android.Manifest;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.qw.http.HttpExecutor;
 import com.qw.http.RequestManager;
+import com.qw.http.callback.FileCallback;
 import com.qw.http.core.HttpURLConnectionHttpEngine;
 import com.qw.http.core.OnGlobalExceptionListener;
 import com.qw.http.callback.StringCallback;
@@ -42,9 +46,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setConnectTimeout(HttpConstants.TIME_OUT)
                 .setReadTimeout(HttpConstants.TIME_OUT)
                 .setDelayTime(0)
-                .setHttpEngine(HttpURLConnectionHttpEngine.class)
                 .setSafeInterface(new AesSafeImpl())
                 .builder());
+        requestPermission();
+    }
+
+    public void requestPermission() {
+        String permissions[] = {
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
+        PermissionHelper.requestPermission(this, permissions, 0);
     }
 
     @Override
@@ -53,9 +64,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mHttpGetBtn:
 //                get();
 //                getJsonToObject();
-                testPut();
+//                testPut();
 //                testRequest();
 //                executeInMainThread();
+                testDownload();
                 break;
             case R.id.mHttpCancelBtn:
                 cancel("baidu");
@@ -63,6 +75,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    private void testDownload() {
+        String download = "https://bccb3cda0187702ddb0619bf2363470e.dd.cdntips.com/imtt.dd.qq.com/16891/AB3A8795AB50248909371866CF73AD1B.apk?mkey=5c4695b574e47cdb&f=0af0&fsname=org.vv.brainTwister_3.98_128.apk&csr=1bbd&cip=116.228.90.46&proto=https";
+        Request request = new Request(download);
+        String path = Environment.getExternalStorageDirectory().getPath() + "/" + request.toString()+".apk";
+        RequestManager.getInstance().execute(request, new FileCallback(path) {
+            @Override
+            public void onSuccess(String path) {
+                HttpLog.d("onSuccess:" + path);
+            }
+
+            @Override
+            public void onFailure(HttpException httpException) {
+                HttpLog.d("onFailure:" + httpException.getMsg());
+            }
+
+            @Override
+            public void onProgressUpdate(long curLength, long contentLength) {
+                HttpLog.d("onProgressUpdate:" + curLength + "/" + contentLength);
+            }
+        });
     }
 
     private void executeInMainThread() {
@@ -167,5 +201,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onHandlerGlobalException(HttpException e) {
         return false;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 0:
+                boolean grant = true;
+                for (int grantResult : grantResults) {
+                    if (grantResult != 0) {
+                        grant = false;
+                    }
+                }
+                if (grant) {
+                } else {
+                    // Permission Denied
+                    requestPermission();
+                    Toast.makeText(this, "READ_PHONE_STATE Denied", Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }

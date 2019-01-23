@@ -75,17 +75,17 @@ public class RequestManager implements RequestTask.OnRequestTaskListener {
     private RequestTask buildRequestTask(Request request, ICallback callback, OnGlobalExceptionListener listener) {
         //设置连接超时时间
         if (request.connect_timeout == 0) {
-            request.connect_timeout = mRequestConfig.connect_timeout;
+            request.connect_timeout = mRequestConfig.getConnectTimeout();
         }
         //设置读取超时时间
         if (request.read_timeout == 0) {
-            request.read_timeout = mRequestConfig.read_timeout;
+            request.read_timeout = mRequestConfig.getReadTimeout();
         }
         if (TextUtils.isEmpty(request.tag)) {
             request.tag = new Date().toLocaleString();
         }
         RequestTask task = new RequestTask(request);
-        task.setHttpEngine(mRequestConfig.httpEngine);
+        task.setHttpEngine(mRequestConfig.getHttpEngine());
         task.setCallback(callback);
         task.setOnGlobalExceptionListener(listener);
         return task;

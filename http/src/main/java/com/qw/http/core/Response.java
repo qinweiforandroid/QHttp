@@ -36,4 +36,14 @@ public class Response implements Serializable {
         headers.put(key, value);
     }
 
+    public void addHeader(String key, int value) {
+        addHeader(key, value + "");
+    }
+
+    public int getContentLength() {
+        if (headers != null && headers.containsKey("content-length")) {
+            return Integer.valueOf(headers.get("content-length"));
+        }
+        return 0;
+    }
 }
