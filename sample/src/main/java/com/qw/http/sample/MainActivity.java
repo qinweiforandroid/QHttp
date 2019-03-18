@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.qw.http.HttpExecutor;
 import com.qw.http.RequestManager;
 import com.qw.http.callback.FileCallback;
+import com.qw.http.core.FileEntity;
 import com.qw.http.core.HttpURLConnectionHttpEngine;
 import com.qw.http.core.OnGlobalExceptionListener;
 import com.qw.http.callback.StringCallback;
@@ -20,6 +21,7 @@ import com.qw.http.core.RequestConfig;
 import com.qw.http.core.RequestMethod;
 import com.qw.http.exception.HttpException;
 import com.qw.http.log.HttpLog;
+import com.qw.http.safe.DefaultSafeImpl;
 import com.qw.http.sample.domain.Meizhi;
 import com.qw.http.sample.net.API;
 import com.qw.http.utils.HttpConstants;
@@ -27,6 +29,7 @@ import com.qw.http.utils.HttpConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnGlobalExceptionListener {
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setConnectTimeout(HttpConstants.TIME_OUT)
                 .setReadTimeout(HttpConstants.TIME_OUT)
                 .setDelayTime(0)
-                .setSafeInterface(new AesSafeImpl())
+                .setSafeInterface(new DefaultSafeImpl())
                 .builder());
         requestPermission();
     }
@@ -67,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                testPut();
 //                testRequest();
 //                executeInMainThread();
-                testDownload();
+//                testDownload();
+                testUpload();
                 break;
             case R.id.mHttpCancelBtn:
                 cancel("baidu");
@@ -77,10 +81,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public static final String VALUE_BMOB_APPLICATION_ID = "e576b3b89c2611b1e691a62914af5a80";
+    public static final String VALUE_BMOB_API_KEY = "baae0b942cd77844447332dfaadb7c5b";
+
+    private void testUpload() {
+        String url = "https://api2.bmob.cn/2/files/a83ea8dd-0081-417a-be4f-5da1fe935b48.jpg";
+        String path = "/storage/emulated/0/PalmLife/tmp/a83ea8dd-0081-417a-be4f-5da1fe935b48.jpg";
+        Request request = new Request(url, RequestMethod.POST);
+        request.addHeader("X-Bmob-Application-Id", VALUE_BMOB_APPLICATION_ID);
+        request.addHeader("X-Bmob-REST-API-Key", VALUE_BMOB_API_KEY);
+        request.addHeader("Content-Type", "image/jpeg");
+        request.postContent = "1";
+        request.uploadFile = path;
+        RequestManager.getInstance().execute(request, new StringCallback() {
+            @Override
+            public void onSuccess(String s) {
+                HttpLog.d(s);
+            }
+
+            @Override
+            public void onFailure(HttpException e) {
+                e.printStackTrace();
+            }
+        });
+
+    }
+
     private void testDownload() {
         String download = "https://bccb3cda0187702ddb0619bf2363470e.dd.cdntips.com/imtt.dd.qq.com/16891/AB3A8795AB50248909371866CF73AD1B.apk?mkey=5c4695b574e47cdb&f=0af0&fsname=org.vv.brainTwister_3.98_128.apk&csr=1bbd&cip=116.228.90.46&proto=https";
         Request request = new Request(download);
-        String path = Environment.getExternalStorageDirectory().getPath() + "/" + request.toString()+".apk";
+        String path = Environment.getExternalStorageDirectory().getPath() + "/" + request.toString() + ".apk";
         RequestManager.getInstance().execute(request, new FileCallback(path) {
             @Override
             public void onSuccess(String path) {

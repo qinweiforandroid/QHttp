@@ -18,6 +18,7 @@ public class Request implements Serializable {
     public HashMap<String, String> headers;
     public HashMap<String, String> parameters;
     public ArrayList<FileEntity> uploadFiles;
+    public String uploadFile;
     /**
      * 是否取消
      */

@@ -9,7 +9,10 @@ import com.qw.http.log.HttpLog;
 import com.qw.http.utils.HttpStringUtil;
 import com.qw.http.utils.UploadUtil;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -141,10 +144,12 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
     @Override
     public void write(OutputStream outputStream) throws HttpException {
         try {
-            if (!TextUtils.isEmpty(request.postContent) && request.uploadFiles != null) {
+            if (request.uploadFile != null) {
+                UploadUtil.uploadFile(outputStream, request.uploadFile);
+            } else if (!TextUtils.isEmpty(request.postContent) && request.uploadFiles != null) {
                 String encrypt = RequestManager.getInstance().getConfig().getSafeInterface().encrypt(request.postContent);
                 HttpLog.d("加密后数据:" + encrypt);
-                UploadUtil.upload(outputStream, encrypt, request.uploadFiles,listener);
+                UploadUtil.upload(outputStream, encrypt, request.uploadFiles, listener);
                 outputStream.write(encrypt.getBytes());
             } else if (!TextUtils.isEmpty(request.postContent)) {
                 String encrypt = RequestManager.getInstance().getConfig().getSafeInterface().encrypt(request.postContent);

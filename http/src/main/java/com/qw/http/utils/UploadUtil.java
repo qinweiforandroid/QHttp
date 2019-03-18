@@ -8,6 +8,7 @@ import com.qw.http.exception.HttpException;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -17,6 +18,20 @@ import java.util.ArrayList;
  * @version create time：Mar 11, 2014 9:01:28 PM
  */
 public class UploadUtil {
+
+    public static void uploadFile(OutputStream out, String filePath) throws HttpException {
+        try {
+            File file = new File(filePath);
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = new FileInputStream(file);
+            while (fis.read(buffer, 0, 1024) != -1) {
+                out.write(buffer, 0, buffer.length);
+            }
+        } catch (IOException e) {
+            throw new HttpException(HttpException.ErrorType.UPLOAD, e.getMessage());
+        }
+    }
+
     /**
      * @param out
      * @param filePath
@@ -171,4 +186,6 @@ public class UploadUtil {
             throw new HttpException(HttpException.ErrorType.UPLOAD, e.getMessage());
         }
     }
+
+
 }
