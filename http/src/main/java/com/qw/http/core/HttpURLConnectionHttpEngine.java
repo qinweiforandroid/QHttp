@@ -9,10 +9,7 @@ import com.qw.http.log.HttpLog;
 import com.qw.http.utils.HttpStringUtil;
 import com.qw.http.utils.UploadUtil;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -30,16 +27,10 @@ import javax.net.ssl.HttpsURLConnection;
  */
 
 public class HttpURLConnectionHttpEngine extends HttpEngine {
+    private HttpURLConnection connection;
 
     @Override
     public Response execute() throws HttpException {
-        if (request.delayTime > 0) {
-            try {
-                Thread.sleep(request.delayTime);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         switch (request.method) {
             case GET:
             case DELETE:
@@ -122,8 +113,14 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
         }
     }
 
+    @Override
+    protected void close() {
+        if (connection != null) {
+            connection.disconnect();
+        }
+    }
+
     private HttpURLConnection getConnection(String completedUrl) throws IOException, HttpException {
-        HttpURLConnection connection = null;
         URL url = new URL(completedUrl);
         log();
         if (URLUtil.isHttpsUrl(completedUrl)) {

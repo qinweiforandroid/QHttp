@@ -27,6 +27,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
             }
             byte[] bfs = os.toByteArray();
             is.close();
+            os.close();
             String responseContent = new String(bfs, "utf-8");
             //先进行解密
             responseContent = RequestManager.getInstance().getConfig().getSafeInterface().decrypt(responseContent);

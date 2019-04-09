@@ -49,8 +49,11 @@ public class RequestTask implements Runnable {
 
     @Override
     public void run() {
-        nRequestTaskListener.onPreExecute(mRequest.tag);
         try {
+            nRequestTaskListener.onPreExecute(mRequest.tag);
+            if (mRequest.delayTime > 0) {
+                Thread.sleep(mRequest.delayTime);
+            }
             Object obj = callback.preRequest(mRequest);
             if (obj != null) {
                 sendMessageToMainThread(HttpConstants.SUCCESS, obj);
@@ -98,6 +101,7 @@ public class RequestTask implements Runnable {
             Response response = httpEngine.execute();
             obj = callback.parse(response);
             obj = callback.postRequest(obj);
+            httpEngine.close();
             callback.onSuccess(obj);
         } catch (HttpException e) {
             callback.onFailure(e);

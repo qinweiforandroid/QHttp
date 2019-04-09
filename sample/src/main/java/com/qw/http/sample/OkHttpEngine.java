@@ -32,6 +32,11 @@ public class OkHttpEngine extends HttpEngine {
     }
 
     @Override
+    protected void close() {
+
+    }
+
+    @Override
     protected void write(OutputStream outputStream) throws HttpException {
         HttpLog.d("write");
     }

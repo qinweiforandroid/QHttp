@@ -19,6 +19,8 @@ public abstract class HttpEngine {
 
     protected abstract Response post() throws HttpException;
 
+    protected abstract void close();
+
     protected abstract void write(OutputStream outputStream) throws HttpException;
 
     public void setRequest(Request request) {
@@ -28,4 +30,5 @@ public abstract class HttpEngine {
     public void setOnProgressUpdateListener(OnProgressUpdateListener listener) {
         this.listener = listener;
     }
+
 }
