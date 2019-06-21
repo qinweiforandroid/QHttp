@@ -1,11 +1,12 @@
 package com.qw.http.sample;
 
 import com.qw.http.core.HttpEngine;
+import com.qw.http.core.OnProgressUpdateListener;
+import com.qw.http.core.Request;
 import com.qw.http.core.Response;
 import com.qw.http.exception.HttpException;
 import com.qw.http.log.HttpLog;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -37,7 +38,7 @@ public class OkHttpEngine extends HttpEngine {
     }
 
     @Override
-    protected void write(OutputStream outputStream) throws HttpException {
+    protected void write(Request request, OutputStream outputStream, OnProgressUpdateListener listener) throws HttpException {
         HttpLog.d("write");
     }
 }

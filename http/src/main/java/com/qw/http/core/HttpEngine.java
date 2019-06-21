@@ -2,33 +2,43 @@ package com.qw.http.core;
 
 import com.qw.http.exception.HttpException;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Created by qinwei on 2017/6/9.
+ * @author qinwei
+ * @date 2017/6/9
  */
 
 public abstract class HttpEngine {
-    protected Request request;
-    protected OnProgressUpdateListener listener;
+    public final Response execute(Request request, OnProgressUpdateListener listener) throws HttpException {
+        switch (request.method) {
+            case GET:
+            case DELETE:
+                return get(request);
+            case POST:
+            case PUT:
+                return post(request, listener);
+            default:
+                throw new HttpException(HttpException.ErrorType.UNKNOW, "not support method[" + request.method.name() + "]");
+        }
+    }
 
-    public abstract Response execute() throws HttpException;
+    protected abstract Response get(Request request) throws HttpException;
 
-    protected abstract Response get() throws HttpException;
+    protected abstract Response post(Request request, OnProgressUpdateListener listener) throws HttpException;
 
-    protected abstract Response post() throws HttpException;
-
+    /**
+     * 关闭请求引擎
+     */
     protected abstract void close();
 
-    protected abstract void write(OutputStream outputStream) throws HttpException;
-
-    public void setRequest(Request request) {
-        this.request = request;
-    }
-
-    public void setOnProgressUpdateListener(OnProgressUpdateListener listener) {
-        this.listener = listener;
-    }
-
+    /**
+     * 写数据到服务器
+     *
+     * @param request
+     * @param outputStream 输出流
+     * @param listener
+     * @throws HttpException
+     */
+    protected abstract void write(Request request, OutputStream outputStream, OnProgressUpdateListener listener) throws HttpException;
 }

@@ -29,26 +29,13 @@ import javax.net.ssl.HttpsURLConnection;
 public class HttpURLConnectionHttpEngine extends HttpEngine {
     private HttpURLConnection connection;
 
-    @Override
-    public Response execute() throws HttpException {
-        switch (request.method) {
-            case GET:
-            case DELETE:
-                return get();
-            case POST:
-            case PUT:
-                return post();
-            default:
-                throw new HttpException(HttpException.ErrorType.UNKNOW, "not support method[" + request.method.name() + "]");
-        }
-    }
+
 
     @Override
-    public Response get() throws HttpException {
+    public Response get(Request request) throws HttpException {
         try {
             request.checkIfCancelled();
-            String completedUrl = HttpStringUtil.buildCompletedUrl(request.url, request.parameters);
-            HttpURLConnection connection = getConnection(completedUrl);
+            HttpURLConnection connection = getConnection(request);
             request.checkIfCancelled();
             return buildResponse(connection);
         } catch (MalformedURLException e) {
@@ -60,7 +47,7 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
         }
     }
 
-    private void log() {
+    private void log(Request request) {
         HttpLog.d("url:" + request.url);
         HttpLog.d("method:" + request.method.name());
         HttpLog.d("headers:" + HttpStringUtil.buildParameterContent(request.headers));
@@ -91,15 +78,15 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
     }
 
     @Override
-    public Response post() throws HttpException {
+    public Response post(Request request, OnProgressUpdateListener listener) throws HttpException {
         try {
             request.checkIfCancelled();
-            HttpURLConnection connection = getConnection(request.url);
+            HttpURLConnection connection = getConnection(request);
             connection.setDoInput(true);
             connection.setDoOutput(true);
             connection.connect();
             OutputStream outputStream = connection.getOutputStream();
-            write(outputStream);
+            write(request, outputStream, listener);
             Response response = new Response();
             response.code = connection.getResponseCode();
             request.checkIfCancelled();
@@ -120,9 +107,10 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
         }
     }
 
-    private HttpURLConnection getConnection(String completedUrl) throws IOException, HttpException {
+    private HttpURLConnection getConnection(Request request) throws IOException, HttpException {
+        String completedUrl = HttpStringUtil.buildCompletedUrl(request.url, request.parameters);
         URL url = new URL(completedUrl);
-        log();
+        log(request);
         if (URLUtil.isHttpsUrl(completedUrl)) {
             connection = (HttpsURLConnection) url.openConnection();
         } else if (URLUtil.isHttpUrl(completedUrl)) {
@@ -139,7 +127,7 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
 
 
     @Override
-    public void write(OutputStream outputStream) throws HttpException {
+    public void write(Request request, OutputStream outputStream, OnProgressUpdateListener listener) throws HttpException {
         try {
             if (request.uploadFile != null) {
                 UploadUtil.uploadFile(outputStream, request.uploadFile);
@@ -161,7 +149,6 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
             throw new HttpException(HttpException.ErrorType.IO, e.getMessage());
         }
     }
-
 
     /**
      * 设置http请求header

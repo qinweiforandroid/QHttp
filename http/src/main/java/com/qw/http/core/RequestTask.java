@@ -8,7 +8,8 @@ import com.qw.http.exception.HttpException;
 import com.qw.http.utils.HttpConstants;
 
 /**
- * Created by qinwei on 2017/6/8.
+ * @author qinwei
+ * @date 2017/6/8
  */
 
 public class RequestTask implements Runnable {
@@ -46,7 +47,6 @@ public class RequestTask implements Runnable {
         this.callback = callback;
     }
 
-
     @Override
     public void run() {
         try {
@@ -62,14 +62,12 @@ public class RequestTask implements Runnable {
             if (httpEngine == null) {
                 httpEngine = new HttpURLConnectionHttpEngine();
             }
-            httpEngine.setRequest(mRequest);
-            httpEngine.setOnProgressUpdateListener(new OnProgressUpdateListener() {
+            Response response = httpEngine.execute(mRequest, new OnProgressUpdateListener() {
                 @Override
                 public void onProgressUpdate(long contentLength, long curLength) {
 
                 }
             });
-            Response response = httpEngine.execute();
             obj = callback.parse(response);
             obj = callback.postRequest(obj);
             sendMessageToMainThread(HttpConstants.SUCCESS, obj);
@@ -91,14 +89,12 @@ public class RequestTask implements Runnable {
             if (httpEngine == null) {
                 httpEngine = new HttpURLConnectionHttpEngine();
             }
-            httpEngine.setRequest(mRequest);
-            httpEngine.setOnProgressUpdateListener(new OnProgressUpdateListener() {
+            Response response = httpEngine.execute(mRequest, new OnProgressUpdateListener() {
                 @Override
                 public void onProgressUpdate(long contentLength, long curLength) {
 
                 }
             });
-            Response response = httpEngine.execute();
             obj = callback.parse(response);
             obj = callback.postRequest(obj);
             httpEngine.close();
@@ -141,8 +137,18 @@ public class RequestTask implements Runnable {
     }
 
     public interface OnRequestTaskListener {
+        /**
+         * 请求之前回调
+         *
+         * @param tag
+         */
         void onPreExecute(String tag);
 
+        /**
+         * 请求结束回调
+         *
+         * @param tag
+         */
         void onExecuteCompleted(String tag);
     }
 }
