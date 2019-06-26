@@ -50,8 +50,8 @@ public class Request implements Serializable {
     /**
      * 添加http头部信息
      *
-     * @param key
-     * @param value
+     * @param key k
+     * @param value v
      */
     public void addHeader(String key, String value) {
         if (headers == null) {
@@ -70,8 +70,8 @@ public class Request implements Serializable {
     /**
      * 添加请求参数
      *
-     * @param key
-     * @param value
+     * @param key k
+     * @param value v
      */
     public void put(String key, String value) {
         if (parameters == null) {
@@ -83,7 +83,7 @@ public class Request implements Serializable {
     /**
      * 检测请求是否被取消
      *
-     * @throws HttpException
+     * @throws HttpException h
      */
     public void checkIfCancelled() throws HttpException {
         if (isCancelled) {

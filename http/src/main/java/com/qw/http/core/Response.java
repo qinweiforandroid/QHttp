@@ -15,15 +15,15 @@ public class Response implements Serializable {
     public String message;
 
     /**
-     * Returns the HTTP status code.
+     * @return Returns the HTTP status code.
      */
     public int code() {
         return code;
     }
 
     /**
-     * Returns true if the code is in [200..300), which means the request was successfully received,
-     * understood, and accepted.
+     * @return Returns true if the code is in [200..300), which means the request was successfully received,
+     * * understood, and accepted.
      */
     public boolean isSuccessful() {
         return code >= 200 && code < 300;

@@ -7,11 +7,10 @@ import android.os.Message;
 import com.qw.http.exception.HttpException;
 import com.qw.http.utils.HttpConstants;
 
-/**
- * @author qinwei
- * @date 2017/6/8
- */
 
+/**
+ * Created by qinwei on 2017/6/8.
+ */
 public class RequestTask implements Runnable {
     private Request mRequest;
     private ICallback callback;
@@ -140,14 +139,14 @@ public class RequestTask implements Runnable {
         /**
          * 请求之前回调
          *
-         * @param tag
+         * @param tag t
          */
         void onPreExecute(String tag);
 
         /**
          * 请求结束回调
          *
-         * @param tag
+         * @param tag t
          */
         void onExecuteCompleted(String tag);
     }

@@ -14,11 +14,17 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
- * @author Stay
- * @version create time：Mar 11, 2014 9:01:28 PM
+ * @author stay
  */
 public class UploadUtil {
 
+    /**
+     * 单文件上传
+     *
+     * @param out      输出流
+     * @param filePath 文件路径
+     * @throws HttpException 异常信息
+     */
     public static void uploadFile(OutputStream out, String filePath) throws HttpException {
         try {
             File file = new File(filePath);
@@ -33,12 +39,15 @@ public class UploadUtil {
     }
 
     /**
-     * @param out
-     * @param filePath
-     * @throws HttpException
+     * 单文件上传
+     *
+     * @param out      输出流
+     * @param filePath 文件路径
+     * @throws HttpException 异常信息
      */
     public static void upload(OutputStream out, String filePath) throws HttpException {
-        String BOUNDARY = "7d4a6d158c9"; // 数据分隔线
+        // 数据分隔线
+        String BOUNDARY = "7d4a6d158c9";
         DataOutputStream outStream = new DataOutputStream(out);
         try {
             outStream.writeBytes("--" + BOUNDARY + "\r\n");
@@ -52,7 +61,8 @@ public class UploadUtil {
             }
             fis.close();
             outStream.write("\r\n".getBytes());
-            byte[] end_data = ("--" + BOUNDARY + "--\r\n").getBytes();// 数据结束标志
+            // 数据结束标志
+            byte[] end_data = ("--" + BOUNDARY + "--\r\n").getBytes();
             outStream.write(end_data);
             outStream.flush();
         } catch (Exception e) {
@@ -61,12 +71,16 @@ public class UploadUtil {
     }
 
     /**
-     * @param out
-     * @param postContent
-     * @param entities
+     * 多文件上传
+     *
+     * @param out         文件输出流
+     * @param postContent 提交数据
+     * @param entities    文件列表
+     * @throws HttpException 异常信息
      */
     public static void upload(OutputStream out, String postContent, ArrayList<FileEntity> entities) throws HttpException {
-        String BOUNDARY = "7d4a6d158c9"; // 数据分隔线
+        // 数据分隔线
+        String BOUNDARY = "7d4a6d158c9";
         String PREFIX = "--", LINEND = "\r\n";
         String CHARSET = "UTF-8";
         DataOutputStream outStream = new DataOutputStream(out);
@@ -79,7 +93,6 @@ public class UploadUtil {
             sb.append("Content-Type: text/plain; charset=" + CHARSET + LINEND);
             sb.append("Content-Transfer-Encoding: 8bit" + LINEND);
             sb.append(LINEND);
-//			post content
             sb.append(postContent);
             sb.append(LINEND);
             outStream.write(sb.toString().getBytes());
@@ -115,12 +128,17 @@ public class UploadUtil {
     }
 
     /**
-     * @param out
-     * @param postContent
-     * @param entities
+     * 多文件上传
+     *
+     * @param out         文件输出流
+     * @param postContent 提交数据
+     * @param entities    文件列表
+     * @param listener    进度监听
+     * @throws HttpException 异常信息
      */
     public static void upload(OutputStream out, String postContent, ArrayList<FileEntity> entities, OnProgressUpdateListener listener) throws HttpException {
-        String BOUNDARY = "7d4a6d158c9"; // 数据分隔线
+        // 数据分隔线
+        String BOUNDARY = "7d4a6d158c9";
         String PREFIX = "--", LINEND = "\r\n";
         String CHARSET = "UTF-8";
         DataOutputStream outStream = new DataOutputStream(out);
@@ -133,7 +151,6 @@ public class UploadUtil {
             sb.append("Content-Type: text/plain; charset=" + CHARSET + LINEND);
             sb.append("Content-Transfer-Encoding: 8bit" + LINEND);
             sb.append(LINEND);
-//			post content
             sb.append(postContent);
             sb.append(LINEND);
             outStream.write(sb.toString().getBytes());
@@ -186,6 +203,4 @@ public class UploadUtil {
             throw new HttpException(HttpException.ErrorType.UPLOAD, e.getMessage());
         }
     }
-
-
 }

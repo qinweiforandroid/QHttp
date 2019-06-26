@@ -57,7 +57,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
     /**
      * 检测请求是否被取消
      *
-     * @throws HttpException
+     * @throws HttpException h
      */
     protected void checkIfCancelled() throws HttpException {
         if (isCancelled) {
