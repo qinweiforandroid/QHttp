@@ -30,7 +30,6 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
     private HttpURLConnection connection;
 
 
-
     @Override
     public Response get(Request request) throws HttpException {
         try {
@@ -61,8 +60,8 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
         response.addHeader("content-length", connection.getContentLength());
         response.addHeader("content-encoding", connection.getContentEncoding());
         response.addHeader("content-type", connection.getContentType());
+        String contentEncoding = connection.getContentEncoding();
         if (response.isSuccessful()) {
-            String contentEncoding = connection.getContentEncoding();
             if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
                 response.inputStream = new GZIPInputStream(connection.getInputStream());
             } else if (contentEncoding != null && contentEncoding.equalsIgnoreCase("deflate")) {
@@ -71,8 +70,14 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
                 response.inputStream = connection.getInputStream();
             }
         } else {
+            if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
+                response.errorStream = new GZIPInputStream(connection.getErrorStream());
+            } else if (contentEncoding != null && contentEncoding.equalsIgnoreCase("deflate")) {
+                response.errorStream = new InflaterInputStream(connection.getErrorStream());
+            } else {
+                response.errorStream = connection.getErrorStream();
+            }
             response.message = connection.getResponseMessage();
-            throw new HttpException(HttpException.ErrorType.SERVER, response.message);
         }
         return response;
     }

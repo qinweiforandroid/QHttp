@@ -11,6 +11,7 @@ import java.util.HashMap;
 public class Response implements Serializable {
     public int code;
     public InputStream inputStream;
+    public InputStream errorStream;
     public HashMap<String, String> headers;
     public String message;
 

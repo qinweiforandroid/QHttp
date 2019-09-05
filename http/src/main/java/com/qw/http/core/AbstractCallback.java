@@ -16,9 +16,32 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
 
     @Override
     public T parse(Response response) throws HttpException {
+        int length = response.getContentLength();
+        String content = "";
+        if (length != 0) {
+            content = parseResponse(response);
+        }
+        if (response.isSuccessful()) {
+            return convert(content);
+        } else {
+            throw handlerError(response.code, content);
+        }
+    }
+
+    protected HttpException handlerError(int code, String content) {
+        return new HttpException(code, content);
+    }
+
+    private String parseResponse(Response response) throws HttpException {
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            InputStream is = response.inputStream;
+
+            InputStream is;
+            if (response.isSuccessful()) {
+                is = response.inputStream;
+            } else {
+                is = response.errorStream;
+            }
             byte[] buffer = new byte[1024];
             int len = -1;
             while ((len = is.read(buffer)) > 0) {
@@ -31,7 +54,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
             String responseContent = new String(bfs, "utf-8");
             //先进行解密
             responseContent = RequestManager.getInstance().getConfig().getSafeInterface().decrypt(responseContent);
-            return convert(responseContent);
+            return responseContent;
         } catch (IOException e) {
             throw new HttpException(HttpException.ErrorType.IO, e.getMessage());
         }

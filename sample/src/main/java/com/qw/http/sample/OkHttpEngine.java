@@ -1,8 +1,13 @@
-package com.qw.http.core;
+package com.qw.http.sample;
 
 import android.text.TextUtils;
 
 import com.qw.http.RequestManager;
+import com.qw.http.core.FileEntity;
+import com.qw.http.core.HttpEngine;
+import com.qw.http.core.OnProgressUpdateListener;
+import com.qw.http.core.Request;
+import com.qw.http.core.Response;
 import com.qw.http.exception.HttpException;
 import com.qw.http.log.HttpLog;
 import com.qw.http.utils.HttpConstants;

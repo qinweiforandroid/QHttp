@@ -41,6 +41,5 @@ dependencies {
     })
     testImplementation 'junit:junit:4.12'
     api 'com.google.code.gson:gson:2.8.5'
-    api 'com.squareup.okhttp3:okhttp:3.14.2'
 }
 apply from: 'bintray.gradle'

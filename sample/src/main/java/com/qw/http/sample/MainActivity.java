@@ -9,11 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.qw.http.HttpExecutor;
 import com.qw.http.RequestManager;
 import com.qw.http.callback.FileCallback;
-import com.qw.http.core.FileEntity;
-import com.qw.http.core.HttpURLConnectionHttpEngine;
 import com.qw.http.core.OnGlobalExceptionListener;
 import com.qw.http.callback.StringCallback;
 import com.qw.http.core.Request;
@@ -29,7 +28,6 @@ import com.qw.http.utils.HttpConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnGlobalExceptionListener {
@@ -71,7 +69,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                testRequest();
 //                executeInMainThread();
 //                testDownload();
-                testUpload();
+//                testUpload();
+//                testGetByOkHttpEngine();
+                testLogin();
                 break;
             case R.id.mHttpCancelBtn:
                 cancel("baidu");
@@ -79,6 +79,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    private void testLogin() {
+//        {
+//            "email": "string",
+//                "password": "string",
+//                "deviceType": "string",
+//                "deviceToken": "string"
+//        }
+        String loginUrl = "http://106.14.117.3:8360/business/auth/login";
+        Request request = new Request(loginUrl, RequestMethod.POST);
+        request.addHeader("content-type", "application/json");
+        JsonObject content = new JsonObject();
+        content.addProperty("email", "rest@foodieats.io");
+        content.addProperty("password", "215fb715785aebfab5ccd7502091c392");
+        content.addProperty("deviceType", "ios-dev-business");
+        content.addProperty("deviceToken", "123456");
+        request.postContent = content.toString();
+        RequestManager.getInstance().execute(request, new StringCallback() {
+            @Override
+            public void onSuccess(String s) {
+            }
+
+            @Override
+            public void onFailure(HttpException httpException) {
+                Log.d("login", httpException.getCode() + " " + httpException.getMsg());
+            }
+        });
+    }
+
+    private void testGetByOkHttpEngine() {
+        RequestManager.getInstance().config(new RequestConfig.Builder()
+                .setConnectTimeout(HttpConstants.TIME_OUT)
+                .setReadTimeout(HttpConstants.TIME_OUT)
+                .setHttpEngine(new OkHttpEngine())
+                .setDelayTime(0)
+                .setSafeInterface(new DefaultSafeImpl())
+                .builder());
+        testRequest();
+//        testUpload();
+//        testUpload1();
     }
 
     public static final String VALUE_BMOB_APPLICATION_ID = "e576b3b89c2611b1e691a62914af5a80";
@@ -92,6 +133,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         request.addHeader("X-Bmob-REST-API-Key", VALUE_BMOB_API_KEY);
         request.addHeader("Content-Type", "image/jpeg");
         request.postContent = "1";
+        request.uploadFile = path;
+        RequestManager.getInstance().execute(request, new StringCallback() {
+            @Override
+            public void onSuccess(String s) {
+                HttpLog.d(s);
+            }
+
+            @Override
+            public void onFailure(HttpException e) {
+                e.printStackTrace();
+            }
+        });
+
+    }
+
+    private void testUpload1() {
+        String url = "http://qinwei.gz01.bdysite.com/PalmLife/upload_file.php";
+        String path = "/storage/emulated/0/PalmLife/tmp/a83ea8dd-0081-417a-be4f-5da1fe935b48.jpg";
+        Request request = new Request(url, RequestMethod.POST);
+        request.addHeader("Content-Type", "image/jpeg");
         request.uploadFile = path;
         RequestManager.getInstance().execute(request, new StringCallback() {
             @Override
@@ -213,9 +274,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void get() {
-        Request request = new Request(API.loadPictureList(20, 2));
+        Request request = new Request("https://www.wanandroid.com/article/list/0/json");
         request.tag = "baidu";
-        request.delayTime = 3000;
         RequestManager.getInstance().execute(request, new StringCallback() {
             @Override
             public void onSuccess(String s) {
