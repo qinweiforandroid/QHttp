@@ -10,7 +10,6 @@ import com.qw.http.core.Request;
 import com.qw.http.core.Response;
 import com.qw.http.exception.HttpException;
 import com.qw.http.log.HttpLog;
-import com.qw.http.utils.HttpConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +27,8 @@ import okhttp3.RequestBody;
  * email: qinwei_it@163.com
  */
 public class OkHttpEngine extends HttpEngine {
-
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
 
     private okhttp3.Response okResponse;
 
@@ -85,12 +85,12 @@ public class OkHttpEngine extends HttpEngine {
                         RequestBody.create(MediaType.parse(file.getFileType()),
                                 new File(file.getFilePath())));
             }
-            mMultipartBodyBuilder.addFormDataPart("data", "data", RequestBody.create(HttpConstants.JSON, encrypt));
+            mMultipartBodyBuilder.addFormDataPart("data", "data", RequestBody.create(JSON, encrypt));
             builder.post(mMultipartBodyBuilder.build());
         } else if (!TextUtils.isEmpty(request.postContent)) {
             String encrypt = RequestManager.getInstance().getConfig().getSafeInterface().encrypt(request.postContent);
             HttpLog.d("加密后数据:" + encrypt);
-            RequestBody body = RequestBody.create(HttpConstants.JSON, encrypt);
+            RequestBody body = RequestBody.create(JSON, encrypt);
             builder.post(body);
         } else if (request.parameters != null && request.parameters.size() > 0) {
             MultipartBody.Builder mMultipartBodyBuilder = new MultipartBody.Builder();

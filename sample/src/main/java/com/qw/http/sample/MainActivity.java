@@ -22,6 +22,7 @@ import com.qw.http.exception.HttpException;
 import com.qw.http.log.HttpLog;
 import com.qw.http.safe.DefaultSafeImpl;
 import com.qw.http.sample.domain.Meizhi;
+import com.qw.http.sample.domain.Profile;
 import com.qw.http.sample.net.API;
 import com.qw.http.utils.HttpConstants;
 
@@ -97,9 +98,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         content.addProperty("deviceType", "ios-dev-business");
         content.addProperty("deviceToken", "123456");
         request.postContent = content.toString();
-        RequestManager.getInstance().execute(request, new StringCallback() {
+        RequestManager.getInstance().execute(request, new FoodEatCallback<Profile>() {
             @Override
-            public void onSuccess(String s) {
+            public void onSuccess(Profile s) {
+                Log.d("login", s.toString());
             }
 
             @Override
