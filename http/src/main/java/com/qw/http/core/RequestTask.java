@@ -15,7 +15,7 @@ public class RequestTask implements Runnable {
     private Request mRequest;
     private ICallback callback;
     private OnRequestTaskListener nRequestTaskListener;
-    private HttpEngine httpEngine;
+    private Engine httpEngine;
     private OnGlobalExceptionListener onGlobalExceptionListener;
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -59,7 +59,7 @@ public class RequestTask implements Runnable {
                 return;
             }
             if (httpEngine == null) {
-                httpEngine = new HttpURLConnectionHttpEngine();
+                httpEngine = new HttpURLConnectionEngine();
             }
             Response response = httpEngine.execute(mRequest, new OnProgressUpdateListener() {
                 @Override
@@ -86,7 +86,7 @@ public class RequestTask implements Runnable {
                 return;
             }
             if (httpEngine == null) {
-                httpEngine = new HttpURLConnectionHttpEngine();
+                httpEngine = new HttpURLConnectionEngine();
             }
             Response response = httpEngine.execute(mRequest, new OnProgressUpdateListener() {
                 @Override
@@ -131,7 +131,7 @@ public class RequestTask implements Runnable {
         callback.cancel();
     }
 
-    public void setHttpEngine(HttpEngine httpEngine) {
+    public void setHttpEngine(Engine httpEngine) {
         this.httpEngine = httpEngine;
     }
 

@@ -23,10 +23,12 @@ import java.util.zip.InflaterInputStream;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * Created by qinwei on 2017/6/9.
+ *
+ * @author qinwei
+ * @date 2017/6/9
  */
 
-public class HttpURLConnectionHttpEngine extends HttpEngine {
+public class HttpURLConnectionEngine extends Engine {
     private HttpURLConnection connection;
 
 
@@ -135,7 +137,7 @@ public class HttpURLConnectionHttpEngine extends HttpEngine {
     public void write(Request request, OutputStream outputStream, OnProgressUpdateListener listener) throws HttpException {
         try {
             if (request.uploadFile != null) {
-                UploadUtil.uploadFile(outputStream, request.uploadFile);
+                UploadUtil.upload(outputStream, request.name, request.uploadFile);
             } else if (!TextUtils.isEmpty(request.postContent) && request.uploadFiles != null) {
                 String encrypt = RequestManager.getInstance().getConfig().getSafeInterface().encrypt(request.postContent);
                 HttpLog.d("加密后数据:" + encrypt);

@@ -10,5 +10,5 @@ import com.qw.http.core.RequestMethod;
 
 public interface ApiService {
     @API(url = "https://www.baidu.com", method = RequestMethod.GET)
-    void loadBaiDu(@Param("username") String username, @Param("password") String password);
+    void loadBaiDu(@Param("username") int username, @Param("password") String password);
 }

@@ -27,7 +27,7 @@ public class RequestManager implements RequestTask.OnRequestTaskListener {
     private RequestConfig mRequestConfig;
 
     private RequestManager() {
-        mExecutors = Executors.newFixedThreadPool(10);
+        mExecutors = Executors.newFixedThreadPool(20);
         mRequestTaskCache = new HashMap<>();
         this.mRequestConfig = RequestConfig.getDefault();
     }
@@ -85,7 +85,7 @@ public class RequestManager implements RequestTask.OnRequestTaskListener {
             request.tag = new Date().toLocaleString();
         }
         RequestTask task = new RequestTask(request);
-        task.setHttpEngine(mRequestConfig.getHttpEngine());
+        task.setHttpEngine(mRequestConfig.getEngine());
         task.setCallback(callback);
         task.setOnGlobalExceptionListener(listener);
         return task;

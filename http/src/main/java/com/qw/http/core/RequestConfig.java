@@ -24,7 +24,7 @@ public class RequestConfig {
     /**
      * 请求处理工具
      */
-    private HttpEngine httpEngine;
+    private Engine engine;
 
     /**
      * 加解密配置
@@ -38,7 +38,7 @@ public class RequestConfig {
         private int delayTime;
         private int connect_timeout;
         private int read_timeout;
-        private HttpEngine httpEngine;
+        private Engine engine;
         private SafeInterface safeInterface;
 
         public Builder setConnectTimeout(int time) {
@@ -56,8 +56,8 @@ public class RequestConfig {
             return this;
         }
 
-        public Builder setHttpEngine(HttpEngine httpEngine) {
-            this.httpEngine = httpEngine;
+        public Builder setEngine(Engine engine) {
+            this.engine = engine;
             return this;
         }
 
@@ -77,10 +77,10 @@ public class RequestConfig {
             }
             config.read_timeout = read_timeout;
             config.delayTime = delayTime;
-            if (httpEngine == null) {
-                httpEngine = new HttpURLConnectionHttpEngine();
+            if (engine == null) {
+                engine = new HttpURLConnectionEngine();
             }
-            config.httpEngine = httpEngine;
+            config.engine = engine;
             if (safeInterface == null) {
                 safeInterface = new DefaultSafeImpl();
             }
@@ -109,8 +109,8 @@ public class RequestConfig {
         return read_timeout;
     }
 
-    public HttpEngine getHttpEngine() {
-        return httpEngine;
+    public Engine getEngine() {
+        return engine;
     }
 
     public SafeInterface getSafeInterface() {

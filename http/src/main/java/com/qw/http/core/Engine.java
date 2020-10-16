@@ -5,9 +5,10 @@ import com.qw.http.exception.HttpException;
 import java.io.OutputStream;
 
 /**
- * Created by qinwei on 2017/6/8.
+ * @author qinwei
+ * @date 2017/6/8
  */
-public abstract class HttpEngine {
+public abstract class Engine {
     public final Response execute(Request request, OnProgressUpdateListener listener) throws HttpException {
         switch (request.method) {
             case GET:
@@ -33,9 +34,9 @@ public abstract class HttpEngine {
     /**
      * 写数据到服务器
      *
-     * @param request r
+     * @param request      r
      * @param outputStream 输出流
-     * @param listener l
+     * @param listener     l
      * @throws HttpException h
      */
     protected abstract void write(Request request, OutputStream outputStream, OnProgressUpdateListener listener) throws HttpException;

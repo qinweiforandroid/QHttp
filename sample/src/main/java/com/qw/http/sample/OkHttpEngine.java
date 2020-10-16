@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.qw.http.RequestManager;
 import com.qw.http.core.FileEntity;
-import com.qw.http.core.HttpEngine;
+import com.qw.http.core.Engine;
 import com.qw.http.core.OnProgressUpdateListener;
 import com.qw.http.core.Request;
 import com.qw.http.core.Response;
@@ -26,7 +26,7 @@ import okhttp3.RequestBody;
  * Created by qinwei on 2019-06-15 17:28
  * email: qinwei_it@163.com
  */
-public class OkHttpEngine extends HttpEngine {
+public class OkHttpEngine extends Engine {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
 

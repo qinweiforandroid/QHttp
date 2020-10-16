@@ -1,4 +1,4 @@
-package com.qw.http.exception;
+package com.qw.network;
 
 /**
  * Created by qinwei on 2017/6/8.
@@ -20,6 +20,7 @@ public class HttpException extends Exception {
     private ErrorType type;
     private int code;
     private String msg = "";
+    private String data = "";
 
     public HttpException(ErrorType type, String detailMessage) {
         super(detailMessage);
@@ -44,5 +45,17 @@ public class HttpException extends Exception {
 
     public String getMsg() {
         return msg;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 }

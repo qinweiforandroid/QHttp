@@ -31,7 +31,7 @@ public class HttpExecutor {
                                 if (args[i] instanceof String) {
                                     request.put(key, args[i].toString());
                                 } else if (args[i] instanceof Integer) {
-                                    request.put(key, (String) args[i]);
+                                    request.put(key, args[i].toString());
                                 }
                             }
                         }

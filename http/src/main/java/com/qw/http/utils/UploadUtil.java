@@ -41,17 +41,18 @@ public class UploadUtil {
     /**
      * 单文件上传
      *
-     * @param out      输出流
-     * @param filePath 文件路径
+     * @param out       输出流
+     * @param form_name 文件表单名称
+     * @param filePath  文件路径
      * @throws HttpException 异常信息
      */
-    public static void upload(OutputStream out, String filePath) throws HttpException {
+    public static void upload(OutputStream out, String form_name, String filePath) throws HttpException {
         // 数据分隔线
         String BOUNDARY = "7d4a6d158c9";
         DataOutputStream outStream = new DataOutputStream(out);
         try {
             outStream.writeBytes("--" + BOUNDARY + "\r\n");
-            outStream.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\""
+            outStream.writeBytes("Content-Disposition: form-data; name=\"" + form_name + "\"; filename=\""
                     + filePath.substring(filePath.lastIndexOf("/") + 1) + "\"" + "\r\n");
             outStream.writeBytes("\r\n");
             byte[] buffer = new byte[1024];
@@ -68,6 +69,17 @@ public class UploadUtil {
         } catch (Exception e) {
             throw new HttpException(HttpException.ErrorType.UPLOAD, e.getMessage());
         }
+    }
+
+    /**
+     * 单文件上传
+     *
+     * @param out      输出流
+     * @param filePath 文件路径
+     * @throws HttpException 异常信息
+     */
+    public static void upload(OutputStream out, String filePath) throws HttpException {
+        upload(out, "file", filePath);
     }
 
     /**

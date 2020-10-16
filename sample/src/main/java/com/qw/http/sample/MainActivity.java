@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                testRequest();
 //                executeInMainThread();
 //                testDownload();
-//                testUpload();
+                testUpload();
 //                testGetByOkHttpEngine();
-                testLogin();
+//                testLogin();
                 break;
             case R.id.mHttpCancelBtn:
                 cancel("baidu");
@@ -115,12 +115,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RequestManager.getInstance().config(new RequestConfig.Builder()
                 .setConnectTimeout(HttpConstants.TIME_OUT)
                 .setReadTimeout(HttpConstants.TIME_OUT)
-                .setHttpEngine(new OkHttpEngine())
+                .setEngine(new OkHttpEngine())
                 .setDelayTime(0)
                 .setSafeInterface(new DefaultSafeImpl())
                 .builder());
-        testRequest();
-//        testUpload();
+//        testRequest();
+        testUpload();
 //        testUpload1();
     }
 
@@ -128,23 +128,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String VALUE_BMOB_API_KEY = "baae0b942cd77844447332dfaadb7c5b";
 
     private void testUpload() {
-        String url = "https://api2.bmob.cn/2/files/a83ea8dd-0081-417a-be4f-5da1fe935b48.jpg";
-        String path = "/storage/emulated/0/PalmLife/tmp/a83ea8dd-0081-417a-be4f-5da1fe935b48.jpg";
+//        String url = "https://api2.bmob.cn/2/files/a83ea8dd-0081-417a-be4f-5da1fe935b48.jpg";
+//        String path = "/storage/emulated/0/PalmLife/tmp/a83ea8dd-0081-417a-be4f-5da1fe935b48.jpg";
+//        Request request = new Request(url, RequestMethod.POST);
+//        request.addHeader("X-Bmob-Application-Id", VALUE_BMOB_APPLICATION_ID);
+//        request.addHeader("X-Bmob-REST-API-Key", VALUE_BMOB_API_KEY);
+//        request.addHeader("Content-Type", "image/jpeg");
+//        request.postContent = "1";
+//        request.uploadFile = path;
+//        RequestManager.getInstance().execute(request, new StringCallback() {
+//            @Override
+//            public void onSuccess(String s) {
+//                HttpLog.d(s);
+//            }
+//
+//            @Override
+//            public void onFailure(HttpException e) {
+//                e.printStackTrace();
+//            }
+//        });
+        String url = "https://apis.foodieats.io/images";
         Request request = new Request(url, RequestMethod.POST);
-        request.addHeader("X-Bmob-Application-Id", VALUE_BMOB_APPLICATION_ID);
-        request.addHeader("X-Bmob-REST-API-Key", VALUE_BMOB_API_KEY);
-        request.addHeader("Content-Type", "image/jpeg");
-        request.postContent = "1";
-        request.uploadFile = path;
+        String path = "/storage/emulated/0/PalmLife/tmp/a83ea8dd-0081-417a-be4f-5da1fe935b48.jpg";
+        request.setUploadFile("image", path);
+        request.addHeader("Content-Type", "multipart/form-data;boundary=7d4a6d158c9");
         RequestManager.getInstance().execute(request, new StringCallback() {
             @Override
             public void onSuccess(String s) {
-                HttpLog.d(s);
+                System.out.println(s);
             }
 
             @Override
-            public void onFailure(HttpException e) {
-                e.printStackTrace();
+            public void onFailure(HttpException httpException) {
+                System.out.println(httpException.getMessage());
             }
         });
 
@@ -226,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onFailure(HttpException httpException) {
 
             }
-        }).loadBaiDu("1", "2");
+        }).loadBaiDu(1, "2");
     }
 
     private void testPut() {
